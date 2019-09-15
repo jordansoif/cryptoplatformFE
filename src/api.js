@@ -10,7 +10,7 @@ export const getUser = () => {
   const header = getAuthHeader();
   Axios({
     method: "get",
-    url: "http://localhost:5000/user",
+    url: "http://localhost:5000/user/",
     headers: getAuthHeader()
   }).then(console.log);
 };
