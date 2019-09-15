@@ -7,6 +7,8 @@ import store from "./reduxStore";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
 import WrappedChangePasswordForm from "./ChangePassword";
+import cookie from "react-cookies";
+import { getUser } from "./api";
 
 const loginUserDispatch = user => {
   return {
@@ -16,35 +18,35 @@ const loginUserDispatch = user => {
 };
 
 class LoginPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      userName: "",
-      password: ""
-    };
-    this.handleLogin = this.handleLogin.bind(this);
-  }
-  handleLogin(e) {
+  state = {
+    userName: "",
+    password: ""
+  };
+
+  handleLogin = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (err == null) {
         const user = values.username;
         const password = values.password;
-        Axios.get(`http://localhost:5000/userlogin/${user}/${password}`).then(
-          res => {
-            if (res.data == "User has successfully logged in") {
-              store.dispatch(loginUserDispatch(user));
-              return this.props.history.push("/homepage");
-            } else return;
-          }
-        );
+        Axios.post(`http://localhost:5000/auth/login`, {
+          user_name: user,
+          password: password
+        }).then(res => {
+          if (res.data.access_token) {
+            cookie.save("token", res.data.access_token);
+            store.dispatch(loginUserDispatch(user));
+            getUser();
+            return this.props.history.push("/homepage");
+          } else return;
+        });
       }
     });
     return ReactDOM.render(
       <p>An Error has occurred.</p>,
       document.getElementById("resOutput")
     );
-  }
+  };
 
   render() {
     const { getFieldDecorator } = this.props.form;

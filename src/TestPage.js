@@ -63,6 +63,11 @@ class TestPage extends React.Component {
           cost_per_unit: 0.01781,
           purchase_date_time: "2019-09-10T18:49:43.583000",
           units_purchased: 9
+        },
+        {
+          cost_per_unit: 0.01781,
+          purchase_date_time: "2019-09-10T18:49:43.583000",
+          units_purchased: 6
         }
       ]
     }).then(res => console.log(res));
