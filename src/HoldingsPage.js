@@ -53,7 +53,9 @@ class HoldingsPage extends React.Component {
   }
 
   componentWillMount() {
-    Axios.get("http://localhost:5000/getallholdings/John").then(res => {
+    Axios.put("http://localhost:5000/getallholdings", {
+      user: "John"
+    }).then(res => {
       var dataArray = [];
       res.data.map(e => dataArray.push(e));
       this.setState({ data: dataArray });

@@ -12,6 +12,7 @@ import NavigationBar from "./NavigationBar";
 import FundAccount from "./FundAccountPage";
 import TradePage from "./TradePage";
 import HoldingsPage from "./HoldingsPage";
+import RealizedGainLossPage from "./RealizedGainLossPage";
 
 class PageRoutes extends React.Component {
   render() {
@@ -27,6 +28,11 @@ class PageRoutes extends React.Component {
             path="/changepassword"
           />
           <Route component={HoldingsPage} exact path="/holdings" />
+          <Route
+            component={RealizedGainLossPage}
+            exact
+            path="/realizedtrades"
+          />
           {/* <Route component={HomePage} exact path="/homepage" /> */}
           <Route component={FundAccount} exact path="/fundaccount" />
           <Route component={TradePage} exact path="/tradepage" />

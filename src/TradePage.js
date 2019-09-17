@@ -63,7 +63,9 @@ class TradePage extends React.Component {
       });
     } else if (e[0] == "Sell") {
       var mapCurrency = [];
-      Axios.get(`http://localhost:5000/getallsymbolholdings/John`).then(res => {
+      Axios.put(`http://localhost:5000/getallsymbolholdings`, {
+        user: this.state.currentUser
+      }).then(res => {
         res.data.map(e =>
           mapCurrency.push({ value: e.symbol, label: e.symbol })
         );
@@ -77,12 +79,13 @@ class TradePage extends React.Component {
 
   symbolInput(e) {
     if (this.state.selectedTradeType == "Sell") {
-      Axios.get(`http://localhost:5000/getsymbolpurchaselots/John/ETHBTC`).then(
-        res => {
-          const lotsToLoad = [...res.data];
-          this.setState({ lotsToLoad, selectedSymbol: e[0] });
-        }
-      );
+      Axios.put(`http://localhost:5000/getsymbolpurchaselots`, {
+        user: this.state.currentUser,
+        symbol: e[0]
+      }).then(res => {
+        const lotsToLoad = [...res.data];
+        this.setState({ lotsToLoad, selectedSymbol: e[0], saleLots: [] });
+      });
     } else this.setState({ selectedSymbol: e[0] });
   }
 
@@ -91,32 +94,32 @@ class TradePage extends React.Component {
   }
 
   lotsToBeSold(e, key) {
-    console.log(e);
-    console.log(key);
-    var copySaleLots = this.state.saleLots;
+    var copySaleLots = this.state.saleLots; //Runs every yime so copy current saleLots
     const filterIndex = copySaleLots.filter(
-      obj => obj.index == key.purchase_date_time
+      //filter to see if saleLot already exists for this lot
+      obj => obj.saleLotInfo.id == key.id
     );
     if (filterIndex.length === 0) {
+      //if no saleLot exists for this new one, create one
       copySaleLots.push({
-        index: key.purchase_date_time,
         value: e,
         saleLotInfo: key
       });
-      return this.setState({ saleLots: copySaleLots });
-    }
+      return this.setState({ saleLots: copySaleLots }); //set saleLots to copy of new modified saleLots
+    } // id is unique, so filterIndex returns an empty array or an object, if we make it here, we found it
     if (filterIndex[0].value !== e) {
+      // if the value has changed from previous, continue below
       var reverseFilterIndex = copySaleLots.filter(
-        obj => obj.index !== key.purchase_date_time
+        //get all other saleLots, then add a new one in place
+        obj => obj.saleLotInfo.id !== key.id // of the object that was found
       );
       reverseFilterIndex.push({
-        index: key.purchase_date_time,
         value: e,
         saleLotInfo: key
       });
       return this.setState({ saleLots: reverseFilterIndex });
     }
-    return;
+    return; //do nothing if the value hasn't changed and a saleLot already exists
   }
 
   calcTradeValue() {
@@ -155,12 +158,25 @@ class TradePage extends React.Component {
   }
 
   placeTrade() {
-    Axios.put(`http://localhost:5000/purchasecrypto`, {
-      user: this.state.currentUser,
-      symbol: this.state.selectedSymbol,
-      cost_per_unit: this.state.pricePerShare,
-      units_purchased: this.state.sharesToTrade
-    }).then(res => console.log(res.data));
+    if (this.state.selectedTradeType == "Buy") {
+      Axios.put(`http://localhost:5000/purchasecrypto`, {
+        user: this.state.currentUser,
+        symbol: this.state.selectedSymbol,
+        cost_per_unit: this.state.pricePerShare,
+        units_purchased: this.state.sharesToTrade
+      }).then(res => console.log(res.data));
+      return console.log("Buy order successfully entered");
+    } else if (this.state.selectedTradeType == "Sell") {
+      Axios.put(`http://localhost:5000/sellcrypto`, {
+        user: this.state.currentUser,
+        symbol: this.state.selectedSymbol,
+        share_price: this.state.pricePerShare,
+        trade_value_calc: this.state.tradeValueCalc,
+        total_shares_being_sold: this.state.sharesToTrade,
+        sale_lots: this.state.saleLots
+      });
+      return console.log("Sell order successfully entered");
+    } else console.log("Order was unsuccessful.");
   }
 
   testRun() {
@@ -192,14 +208,14 @@ class TradePage extends React.Component {
         key: "units_purchased"
       },
       {
-        title: "Date of Purchase",
-        dataIndex: "purchase_date_time",
-        key: "purchase_date_time"
-      },
-      {
         title: "Acquisition Cost per Unit",
         dataIndex: "cost_per_unit",
         key: "cost_per_unit"
+      },
+      {
+        title: "Date of Purchase",
+        dataIndex: "purchase_date_time",
+        key: "purchase_date_time"
       }
     ];
 
