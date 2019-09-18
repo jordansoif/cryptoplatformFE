@@ -8,7 +8,8 @@ import store from "./reduxStore";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
 import { InputNumber } from "antd";
-import { autoHeader } from "./api";
+import { autoHeader, getAuthHeader } from "./api";
+
 
 class FundAccount extends React.Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class FundAccount extends React.Component {
   }
 
   componentWillMount() {
-    autoHeader(get, "info/getuserbitcoin")
+    autoHeader('get', "info/getuserbitcoin")
       // Axios({
       //   method: "get",
       //   url: "http://localhost:5000/info/getuserbitcoin",

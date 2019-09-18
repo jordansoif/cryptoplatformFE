@@ -5,7 +5,7 @@ import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
 import store from "./reduxStore";
-import { autoHeader } from "./apiTest";
+import { autoHeader, getAuthHeader } from "./apiTest";
 
 const columns = [
   {
