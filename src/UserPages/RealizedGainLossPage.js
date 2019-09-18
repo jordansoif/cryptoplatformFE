@@ -1,11 +1,10 @@
 import { Menu, Icon, Table } from "antd";
 import React from "react";
-import "antd/dist/antd.css";
 import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
-import store from "./reduxStore";
-import { getAuthHeader } from "./api";
+import store from "/ReduxFolder/reduxStore";
+import { autoHeader } from "../api";
 
 const columns = [
   {
@@ -51,19 +50,12 @@ const columns = [
 ];
 
 class RealizedGainLossPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: []
-    };
-  }
+  state = {
+    data: []
+  };
 
   componentWillMount() {
-    Axios({
-      method: "get",
-      url: "http://localhost:5000/info/getallrealized",
-      headers: getAuthHeader()
-    }).then(res => {
+    autoHeader("get", "info/getallrealized").then(res => {
       var dataArray = [];
       res.data.map(e => dataArray.push(e));
       this.setState({ data: dataArray });

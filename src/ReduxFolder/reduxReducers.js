@@ -1,10 +1,8 @@
-import { createStore } from "Redux";
-
 const initialState = {
   currentUser: null
 };
 
-function loginFeature(state = initialState, action) {
+export const loginFeature = (state = initialState, action) => {
   switch (action.type) {
     case "LOGIN":
       return Object.assign({}, state, {
@@ -17,11 +15,4 @@ function loginFeature(state = initialState, action) {
     default:
       return;
   }
-}
-
-let store = createStore(
-  loginFeature,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
-
-export default store;
+};

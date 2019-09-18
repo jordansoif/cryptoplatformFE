@@ -1,10 +1,9 @@
 import { Menu, Icon } from "antd";
 import React from "react";
-import "antd/dist/antd.css";
 import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
-import store from "./reduxStore";
+import store from "/ReduxFolder/reduxStore";
 
 class ResearchPage extends React.Component {
   render() {

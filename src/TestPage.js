@@ -8,26 +8,21 @@ import {
   Divider,
   InputNumber
 } from "antd";
-import "antd/dist/antd.css";
 import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState, bindActionCreators } from "Redux";
-import store from "./reduxStore";
+import store from "/ReduxFolder/reduxStore";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
 import { VictoryLine, VictoryChart, VictoryAxis, VictoryTheme } from "victory";
 
 class TestPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      testData: [],
-      infoLoadToggle: false
-    };
-    this.placeTrade = this.placeTrade.bind(this);
-  }
+  state = {
+    testData: [],
+    infoLoadToggle: false
+  };
 
-  placeTrade() {
+  placeTrade = () => {
     let testData = [];
     var i;
     Axios.put(`http://localhost:5000/binance/twodaykline`, {
@@ -42,7 +37,7 @@ class TestPage extends React.Component {
       this.setState({ testData, infoLoadToggle: !this.state.infoLoadToggle });
     });
     return console.log(testData);
-  }
+  };
 
   render() {
     return (

@@ -1,11 +1,10 @@
 import { Menu, Icon, Cascader, InputNumber, Button, Table } from "antd";
 import React from "react";
-import "antd/dist/antd.css";
 import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
-import store from "./reduxStore";
-import { getAuthHeader } from "./api";
+import store from "/ReduxFolder/reduxStore";
+import { autoHeader } from "../api";
 
 const optionsBuySell = [
   {
@@ -19,38 +18,26 @@ const optionsBuySell = [
 ];
 
 class TradePage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentUser: "",
-      currentUserBitcoin: 0,
-      sharesToTrade: 0, //share quantity
-      selectedTradeType: "", //buy/sell
-      selectedSymbol: "", //symbol
-      tradeValueCalc: 0, //value to be subtracted/added to cash
-      pricePerShare: 0, //share price for buy/sell
-      currencySelection: [], //shares shown in currency selector
-      lotsToLoad: [], //share lots shown for sale when order/crypto is selected
-      saleLots: [] // share lots selected to be sold
-    };
-    this.shareInput = this.shareInput.bind(this);
-    this.tradeTypeInput = this.tradeTypeInput.bind(this);
-    this.symbolInput = this.symbolInput.bind(this);
-    this.calcTradeValue = this.calcTradeValue.bind(this);
-    this.placeTrade = this.placeTrade.bind(this);
-    this.lotsToBeSold = this.lotsToBeSold.bind(this);
-    this.testRun = this.testRun.bind(this);
-  }
+  state = {
+    currentUser: "",
+    currentUserBitcoin: 0,
+    sharesToTrade: 0, //share quantity
+    selectedTradeType: "", //buy/sell
+    selectedSymbol: "", //symbol
+    tradeValueCalc: 0, //value to be subtracted/added to cash
+    pricePerShare: 0, //share price for buy/sell
+    currencySelection: [], //shares shown in currency selector
+    lotsToLoad: [], //share lots shown for sale when order/crypto is selected
+    saleLots: [] // share lots selected to be sold
+  };
 
   componentWillMount() {
-    Axios({
-      method: "get",
-      url: "http://localhost:5000/info/getuserbitcoin",
-      headers: getAuthHeader()
-    }).then(res => this.setState({ currentUserBitcoin: res.data }));
+    autoHeader("get", "info/getuserbitcoin").then(res =>
+      this.setState({ currentUserBitcoin: res.data })
+    );
   }
 
-  tradeTypeInput(e) {
+  tradeTypeInput = e => {
     if (e[0] == "Buy") {
       var mapCurrency = [];
       Axios.get(`http://localhost:5000/binance/getallsymbols`).then(res => {
@@ -66,11 +53,7 @@ class TradePage extends React.Component {
       });
     } else if (e[0] == "Sell") {
       var mapCurrency = [];
-      Axios({
-        method: "get",
-        url: "http://localhost:5000/trade/getallsymbolholdings",
-        headers: getAuthHeader()
-      }).then(res => {
+      autoHeader("get", "trade/getallsymbolholdings").then(res => {
         res.data.map(e =>
           mapCurrency.push({ value: e.symbol, label: e.symbol })
         );
@@ -80,29 +63,27 @@ class TradePage extends React.Component {
         selectedTradeType: e[0]
       });
     }
-  }
+  };
 
-  symbolInput(e) {
+  symbolInput = e => {
     if (this.state.selectedTradeType == "Sell") {
-      Axios({
-        method: "put",
-        url: "http://localhost:5000/trade/getsymbolpurchaselots",
-        data: {
-          symbol: e[0]
-        },
-        headers: getAuthHeader()
+      if (e[0] == undefined) {
+        return;
+      }
+      autoHeader("put", "trade/getsymbolpurchaselots", {
+        symbol: e[0]
       }).then(res => {
         const lotsToLoad = [...res.data];
         this.setState({ lotsToLoad, selectedSymbol: e[0], saleLots: [] });
       });
     } else this.setState({ selectedSymbol: e[0] });
-  }
+  };
 
-  shareInput(e) {
+  shareInput = e => {
     this.setState({ sharesToTrade: e });
-  }
+  };
 
-  lotsToBeSold(e, key) {
+  lotsToBeSold = (e, key) => {
     var copySaleLots = this.state.saleLots; //Runs every yime so copy current saleLots
     const filterIndex = copySaleLots.filter(
       //filter to see if saleLot already exists for this lot
@@ -129,9 +110,9 @@ class TradePage extends React.Component {
       return this.setState({ saleLots: reverseFilterIndex });
     }
     return; //do nothing if the value hasn't changed and a saleLot already exists
-  }
+  };
 
-  calcTradeValue() {
+  calcTradeValue = () => {
     if (this.state.selectedTradeType == "Buy") {
       Axios.put("http://localhost:5000/binance/getsymbolinfo", {
         symbol: this.state.selectedSymbol
@@ -164,41 +145,27 @@ class TradePage extends React.Component {
         return console.log(this.state.tradeValueCalc);
       });
     } else return;
-  }
+  };
 
-  placeTrade() {
+  placeTrade = () => {
     if (this.state.selectedTradeType == "Buy") {
-      Axios({
-        method: "put",
-        url: "http://localhost:5000/trade/purchasecrypto",
-        data: {
-          symbol: this.state.selectedSymbol,
-          cost_per_unit: this.state.pricePerShare,
-          units_purchased: this.state.sharesToTrade
-        },
-        headers: getAuthHeader()
+      autoHeader("put", "trade/purchasecrypto", {
+        symbol: this.state.selectedSymbol,
+        cost_per_unit: this.state.pricePerShare,
+        units_purchased: this.state.sharesToTrade
       }).then(res => console.log(res.data));
       return console.log("Buy order successfully entered");
     } else if (this.state.selectedTradeType == "Sell") {
-      Axios({
-        method: "put",
-        url: "http://localhost:5000/trade/sellcrypto",
-        data: {
-          symbol: this.state.selectedSymbol,
-          share_price: this.state.pricePerShare,
-          trade_value_calc: this.state.tradeValueCalc,
-          total_shares_being_sold: this.state.sharesToTrade,
-          sale_lots: this.state.saleLots
-        },
-        headers: getAuthHeader()
+      autoHeader("put", "trade/sellcrypto", {
+        symbol: this.state.selectedSymbol,
+        share_price: this.state.pricePerShare,
+        trade_value_calc: this.state.tradeValueCalc,
+        total_shares_being_sold: this.state.sharesToTrade,
+        sale_lots: this.state.saleLots
       });
       return console.log("Sell order successfully entered");
     } else console.log("Order was unsuccessful.");
-  }
-
-  testRun() {
-    console.log(this.state.saleLots);
-  }
+  };
 
   render() {
     const columns = [
@@ -240,10 +207,7 @@ class TradePage extends React.Component {
       <div>
         <h1>Trade Page:</h1>
         <br />
-        <p>
-          {this.state.currentUser}'s current bitcoin balance is: ₿
-          {this.state.currentUserBitcoin}
-        </p>
+        <p>Bitcoin balance is: ₿{this.state.currentUserBitcoin}</p>
         <br />
         <p>Trade Type:</p>
         <Cascader
@@ -304,7 +268,6 @@ class TradePage extends React.Component {
         >
           Place Trade
         </Button>
-        <Button onClick={this.testRun}>Test Run</Button>
       </div>
     );
   }

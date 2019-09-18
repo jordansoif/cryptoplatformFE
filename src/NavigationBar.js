@@ -1,43 +1,34 @@
 import { Menu, Icon } from "antd";
 import React from "react";
-import "antd/dist/antd.css";
 import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
-import store from "./reduxStore";
+import store from "/ReduxFolder/reduxStore";
 
 const { SubMenu } = Menu;
 
 class NavigationBar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.handleClickHoldings = this.handleClickHoldings.bind(this);
-    this.handleClickTrade = this.handleClickTrade.bind(this);
-    this.handleClickFundAccount = this.handleClickFundAccount.bind(this);
-    this.handleClickResearch = this.handleClickResearch.bind(this);
-    this.handleClickRealizedTrades = this.handleClickRealizedTrades.bind(this);
-  }
+  state = {};
 
-  handleClickHoldings() {
+  handleClickHoldings = () => {
     return this.props.history.push("/holdings");
-  }
+  };
 
-  handleClickTrade() {
+  handleClickTrade = () => {
     return this.props.history.push("/tradepage");
-  }
+  };
 
-  handleClickFundAccount() {
+  handleClickFundAccount = () => {
     return this.props.history.push("/fundaccount");
-  }
+  };
 
-  handleClickResearch() {
+  handleClickResearch = () => {
     return this.props.history.push("/research");
-  }
+  };
 
-  handleClickRealizedTrades() {
+  handleClickRealizedTrades = () => {
     return this.props.history.push("/realizedtrades");
-  }
+  };
 
   render() {
     return (

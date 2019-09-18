@@ -1,25 +1,20 @@
 import React from "react";
 import { Form, Icon, Input, Button, Checkbox } from "antd";
-import "antd/dist/antd.css";
 import Axios from "axios";
-import { BrowserRouter as Router } from "react-router-dom";
-import store from "./reduxStore";
+import { BrowserRouter as Router, Link } from "react-router-dom";
+import store from "/ReduxFolder/reduxStore";
+import { loginUserDispatch } from "/ReduxFolder/reduxActions";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
 import WrappedChangePasswordForm from "./ChangePassword";
 import cookie from "react-cookies";
-
-const loginUserDispatch = user => {
-  return {
-    type: "LOGIN",
-    currentUser: user
-  };
-};
+import { autoHeader } from "../api";
 
 class LoginPage extends React.Component {
   state = {
     userName: "",
-    password: ""
+    password: "",
+    errorMessage: ""
   };
 
   handleLogin = e => {
@@ -28,7 +23,7 @@ class LoginPage extends React.Component {
       if (err == null) {
         const user = values.username;
         const password = values.password;
-        Axios.post(`http://localhost:5000/auth/login`, {
+        autoHeader("post", "auth/login", {
           user_name: user,
           password: password
         }).then(res => {
@@ -36,14 +31,13 @@ class LoginPage extends React.Component {
             cookie.save("token", res.data.access_token);
             store.dispatch(loginUserDispatch(user));
             return this.props.history.push("/homepage");
-          } else return;
+          } else
+            return this.setState({ errorMessage: "An error has occurred." });
         });
+      } else {
+        return this.setState({ errorMessage: err });
       }
     });
-    return ReactDOM.render(
-      <p>An Error has occurred.</p>,
-      document.getElementById("resOutput")
-    );
   };
 
   render() {
@@ -82,7 +76,7 @@ class LoginPage extends React.Component {
               />
             )}
           </Form.Item>
-          <div id="resOutput" />
+          <p>{this.state.errorMessage}</p>
           <Button
             type="primary"
             htmlType="submit"
@@ -91,10 +85,8 @@ class LoginPage extends React.Component {
             Log in
           </Button>
           <Form.Item>
-            <a className="login-form-forgot" href="/changepassword">
-              Change Password{" "}
-            </a>
-            or <a href="/createuser">Register Now!</a>
+            <Link to="/changepassword">Change Password </Link>
+            or <Link to="/createuser">Register Now!</Link>
           </Form.Item>
         </Form>
       </div>

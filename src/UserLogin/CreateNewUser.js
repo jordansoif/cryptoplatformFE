@@ -1,21 +1,16 @@
 import React from "react";
 import { Form, Icon, Input, Button, Checkbox } from "antd";
-import "antd/dist/antd.css";
 import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
-import store from "./reduxStore";
+import store from "/ReduxFolder/reduxStore";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
 
 class CreateNewUser extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    this.handleCreateNewUser = this.handleCreateNewUser.bind(this);
-  }
+  state = { resOutput: "" };
 
-  handleCreateNewUser(e) {
+  handleCreateNewUser = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -23,24 +18,11 @@ class CreateNewUser extends React.Component {
           Axios.post(`http://localhost:5000/auth/createuser`, {
             user_name: values.username,
             password: values.password
-          }).then(res =>
-            ReactDOM.render(
-              <p>{res.data}</p>,
-              document.getElementById("resOutput")
-            )
-          );
-        } else
-          ReactDOM.render(
-            <p>Passwords do not match.</p>,
-            document.getElementById("resOutput")
-          );
-      } else
-        ReactDOM.render(
-          <p>An Error has occurred.</p>,
-          document.getElementById("resOutput")
-        );
+          }).then(res => this.stateState({ resOutput: res.data }));
+        } else this.stateState({ resOutput: "Passwords do not match." });
+      } else this.stateState({ resOutput: "An Error has occurred." });
     });
-  }
+  };
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -89,7 +71,7 @@ class CreateNewUser extends React.Component {
               />
             )}
           </Form.Item>
-          <div id="resOutput" />
+          <p>{this.state.resOutput}</p>
           <Form.Item>
             <Button
               type="primary"
@@ -98,7 +80,7 @@ class CreateNewUser extends React.Component {
             >
               Create User
             </Button>{" "}
-            or <a href="/">Back to Login</a>
+            or <Link to="/">Back to Login</Link>
           </Form.Item>
         </Form>
       </div>
