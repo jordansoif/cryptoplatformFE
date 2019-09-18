@@ -15,7 +15,7 @@ import { getState, bindActionCreators } from "Redux";
 import store from "./reduxStore";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
-import { VictoryLine } from "victory";
+import { VictoryLine, VictoryChart, VictoryAxis, VictoryTheme } from "victory";
 
 class TestPage extends React.Component {
   constructor(props) {
@@ -30,7 +30,9 @@ class TestPage extends React.Component {
   placeTrade() {
     let testData = [];
     var i;
-    Axios.get(`http://localhost:5000/twodaykline/BNBBTC`).then(res => {
+    Axios.put(`http://localhost:5000/binance/twodaykline`, {
+      symbol: "BNBBTC"
+    }).then(res => {
       res.data.map(e => {
         testData.push({ Hours: 0, Price: e[1] });
       });
@@ -50,7 +52,45 @@ class TestPage extends React.Component {
         {this.state.infoLoadToggle == false ? (
           ""
         ) : (
-          <VictoryLine data={this.state.testData} x="Hours" y="Price" />
+          <VictoryChart theme={VictoryTheme.material} domainPadding={20}>
+            <VictoryAxis
+              tickValues={[0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48]}
+              tickFormat={[
+                "48",
+                "44",
+                "40",
+                "36",
+                "32",
+                "28",
+                "24",
+                "20",
+                "16",
+                "12",
+                "8",
+                "4",
+                "Now"
+              ]}
+            />
+            <VictoryAxis
+              dependentAxis
+              tickFormat={[
+                "48",
+                "44",
+                "40",
+                "36",
+                "32",
+                "28",
+                "24",
+                "20",
+                "16",
+                "12",
+                "8",
+                "4",
+                "Now"
+              ]}
+            />
+            <VictoryLine data={this.state.testData} x="Hours" y="Price" />
+          </VictoryChart>
         )}
       </div>
     );

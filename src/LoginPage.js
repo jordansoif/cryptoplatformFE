@@ -8,7 +8,6 @@ import ReactDOM from "react-dom";
 import mountNode from "react-dom";
 import WrappedChangePasswordForm from "./ChangePassword";
 import cookie from "react-cookies";
-import { getUser } from "./api";
 
 const loginUserDispatch = user => {
   return {
@@ -36,7 +35,6 @@ class LoginPage extends React.Component {
           if (res.data.access_token) {
             cookie.save("token", res.data.access_token);
             store.dispatch(loginUserDispatch(user));
-            getUser();
             return this.props.history.push("/homepage");
           } else return;
         });

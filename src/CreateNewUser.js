@@ -20,7 +20,7 @@ class CreateNewUser extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         if (values.password === values.passwordConfirm) {
-          Axios.post(`http://localhost:5000/createuser`, {
+          Axios.post(`http://localhost:5000/auth/createuser`, {
             user_name: values.username,
             password: values.password
           }).then(res =>

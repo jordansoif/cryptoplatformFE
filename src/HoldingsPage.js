@@ -5,6 +5,7 @@ import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
 import store from "./reduxStore";
+import { autoHeader } from "./apiTest";
 
 const columns = [
   {
@@ -53,8 +54,10 @@ class HoldingsPage extends React.Component {
   }
 
   componentWillMount() {
-    Axios.put("http://localhost:5000/getallholdings", {
-      user: "John"
+    Axios({
+      method: "get",
+      url: "http://localhost:5000/info/getallholdings",
+      headers: getAuthHeader()
     }).then(res => {
       var dataArray = [];
       res.data.map(e => dataArray.push(e));

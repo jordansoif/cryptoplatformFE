@@ -5,6 +5,7 @@ import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
 import store from "./reduxStore";
+import { getAuthHeader } from "./api";
 
 const optionsBuySell = [
   {
@@ -21,7 +22,7 @@ class TradePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: "John",
+      currentUser: "",
       currentUserBitcoin: 0,
       sharesToTrade: 0, //share quantity
       selectedTradeType: "", //buy/sell
@@ -42,15 +43,17 @@ class TradePage extends React.Component {
   }
 
   componentWillMount() {
-    Axios.get(`http://localhost:5000/getuserbitcoin/John`).then(res =>
-      this.setState({ currentUserBitcoin: res.data })
-    );
+    Axios({
+      method: "get",
+      url: "http://localhost:5000/info/getuserbitcoin",
+      headers: getAuthHeader()
+    }).then(res => this.setState({ currentUserBitcoin: res.data }));
   }
 
   tradeTypeInput(e) {
     if (e[0] == "Buy") {
       var mapCurrency = [];
-      Axios.get(`http://localhost:5000/getallsymbols`).then(res => {
+      Axios.get(`http://localhost:5000/binance/getallsymbols`).then(res => {
         res.data.map(e => {
           if (e.symbol.slice(-3) === "BTC") {
             mapCurrency.push({ value: e.symbol, label: e.symbol });
@@ -63,8 +66,10 @@ class TradePage extends React.Component {
       });
     } else if (e[0] == "Sell") {
       var mapCurrency = [];
-      Axios.put(`http://localhost:5000/getallsymbolholdings`, {
-        user: this.state.currentUser
+      Axios({
+        method: "get",
+        url: "http://localhost:5000/trade/getallsymbolholdings",
+        headers: getAuthHeader()
       }).then(res => {
         res.data.map(e =>
           mapCurrency.push({ value: e.symbol, label: e.symbol })
@@ -79,9 +84,13 @@ class TradePage extends React.Component {
 
   symbolInput(e) {
     if (this.state.selectedTradeType == "Sell") {
-      Axios.put(`http://localhost:5000/getsymbolpurchaselots`, {
-        user: this.state.currentUser,
-        symbol: e[0]
+      Axios({
+        method: "put",
+        url: "http://localhost:5000/trade/getsymbolpurchaselots",
+        data: {
+          symbol: e[0]
+        },
+        headers: getAuthHeader()
       }).then(res => {
         const lotsToLoad = [...res.data];
         this.setState({ lotsToLoad, selectedSymbol: e[0], saleLots: [] });
@@ -124,9 +133,9 @@ class TradePage extends React.Component {
 
   calcTradeValue() {
     if (this.state.selectedTradeType == "Buy") {
-      Axios.get(
-        `http://localhost:5000/getsymbolinfo/${this.state.selectedSymbol}`
-      ).then(res => {
+      Axios.put("http://localhost:5000/binance/getsymbolinfo", {
+        symbol: this.state.selectedSymbol
+      }).then(res => {
         var parsedData = parseFloat(res.data.price);
         var shares = this.state.sharesToTrade;
         var tradeValue = parsedData * shares;
@@ -138,9 +147,9 @@ class TradePage extends React.Component {
       });
     }
     if (this.state.selectedTradeType == "Sell") {
-      Axios.get(
-        `http://localhost:5000/getsymbolinfo/${this.state.selectedSymbol}`
-      ).then(res => {
+      Axios.put("http://localhost:5000/binance/getsymbolinfo", {
+        symbol: this.state.selectedSymbol
+      }).then(res => {
         var parsedData = parseFloat(res.data.price);
         var sharesToSell = 0;
         this.state.saleLots.map(e => {
@@ -159,21 +168,29 @@ class TradePage extends React.Component {
 
   placeTrade() {
     if (this.state.selectedTradeType == "Buy") {
-      Axios.put(`http://localhost:5000/purchasecrypto`, {
-        user: this.state.currentUser,
-        symbol: this.state.selectedSymbol,
-        cost_per_unit: this.state.pricePerShare,
-        units_purchased: this.state.sharesToTrade
+      Axios({
+        method: "put",
+        url: "http://localhost:5000/trade/purchasecrypto",
+        data: {
+          symbol: this.state.selectedSymbol,
+          cost_per_unit: this.state.pricePerShare,
+          units_purchased: this.state.sharesToTrade
+        },
+        headers: getAuthHeader()
       }).then(res => console.log(res.data));
       return console.log("Buy order successfully entered");
     } else if (this.state.selectedTradeType == "Sell") {
-      Axios.put(`http://localhost:5000/sellcrypto`, {
-        user: this.state.currentUser,
-        symbol: this.state.selectedSymbol,
-        share_price: this.state.pricePerShare,
-        trade_value_calc: this.state.tradeValueCalc,
-        total_shares_being_sold: this.state.sharesToTrade,
-        sale_lots: this.state.saleLots
+      Axios({
+        method: "put",
+        url: "http://localhost:5000/trade/sellcrypto",
+        data: {
+          symbol: this.state.selectedSymbol,
+          share_price: this.state.pricePerShare,
+          trade_value_calc: this.state.tradeValueCalc,
+          total_shares_being_sold: this.state.sharesToTrade,
+          sale_lots: this.state.saleLots
+        },
+        headers: getAuthHeader()
       });
       return console.log("Sell order successfully entered");
     } else console.log("Order was unsuccessful.");

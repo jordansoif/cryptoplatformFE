@@ -8,12 +8,12 @@ import store from "./reduxStore";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
 import { InputNumber } from "antd";
+import { autoHeader } from "./api";
 
 class FundAccount extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: "John",
       userBitcoinLast: null,
       userBitcoinNow: 0,
       inputValue: 0
@@ -22,20 +22,19 @@ class FundAccount extends React.Component {
     this.buttonClick = this.buttonClick.bind(this);
   }
 
-  // SWITCH DEFAULT FROM JOHN TO "" ONCE REDUX IS UP AND WORKIN
-
   componentWillMount() {
-    // this.setState({
-    //   currentUser: store.getState().currentUser
-    // });
-    Axios.get(
-      `http://localhost:5000/getuserbitcoin/${this.state.currentUser}`
-    ).then(res => {
-      this.setState({
-        userBitcoinLast: this.state.userBitcoinNow,
-        userBitcoinNow: res.data
+    autoHeader(get, "info/getuserbitcoin")
+      // Axios({
+      //   method: "get",
+      //   url: "http://localhost:5000/info/getuserbitcoin",
+      //   headers: getAuthHeader()
+      // })
+      .then(res => {
+        this.setState({
+          userBitcoinLast: this.state.userBitcoinNow,
+          userBitcoinNow: res.data
+        });
       });
-    });
   }
 
   shouldComponentUpdate() {
@@ -52,10 +51,12 @@ class FundAccount extends React.Component {
   }
 
   buttonClick() {
-    Axios.put("http://localhost:5000/updatebitcoin", {
-      user_name: this.state.currentUser,
-      bitcoin: this.state.inputValue
-    }).then(res => console.log(res));
+    Axios({
+      method: "put",
+      url: "http://localhost:5000/info/updatebitcoin",
+      data: { bitcoin: this.state.inputValue },
+      headers: getAuthHeader()
+    }).then(res => console.log(res.data));
   }
 
   render() {
