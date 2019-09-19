@@ -12,6 +12,7 @@ import FundAccount from "./UserPages/FundAccountPage";
 import TradePage from "./UserPages/TradePage";
 import HoldingsPage from "./UserPages/HoldingsPage";
 import RealizedGainLossPage from "./UserPages/RealizedGainLossPage";
+import NewsPage from "./UserPages/NewsPage";
 
 const loggedOut = () => {
   return (
@@ -61,6 +62,7 @@ class PageRoutes extends React.Component {
             path="/realizedtrades"
           />
           <Route component={FundAccount} exact path="/fundaccount" />
+          <Route component={NewsPage} exact path="/news" />
           <Route component={TradePage} exact path="/tradepage" />
           <Route component={TestPage} exact path="/testpage" />
           <Route component={WrappedNormalLoginForm} exact path="/" />

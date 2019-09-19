@@ -22,8 +22,8 @@ class NavigationBar extends React.Component {
     return this.props.history.push("/fundaccount");
   };
 
-  handleClickResearch = () => {
-    return this.props.history.push("/research");
+  handleClickNews = () => {
+    return this.props.history.push("/news");
   };
 
   handleClickRealizedTrades = () => {
@@ -32,10 +32,7 @@ class NavigationBar extends React.Component {
 
   render() {
     return (
-      <Menu
-        // selectedKeys={[this.state.current]}
-        mode="horizontal"
-      >
+      <Menu mode="horizontal">
         <Menu.Item key="Holdings" onClick={this.handleClickHoldings}>
           <Icon type="bank" />
           Holdings
@@ -48,9 +45,9 @@ class NavigationBar extends React.Component {
           <Icon type="dollar" />
           Fund Account
         </Menu.Item>
-        <Menu.Item key="Research" onClick={this.handleClickResearch}>
+        <Menu.Item key="News" onClick={this.handleClickNews}>
           <Icon type="read" />
-          Research
+          News
         </Menu.Item>
         <Menu.Item key="Realized" onClick={this.handleClickRealizedTrades}>
           <Icon type="check-square" />

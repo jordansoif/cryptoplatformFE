@@ -6,7 +6,9 @@ import {
   Table,
   Popconfirm,
   Divider,
-  InputNumber
+  InputNumber,
+  List,
+  Typography
 } from "antd";
 import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
@@ -23,28 +25,58 @@ class TestPage extends React.Component {
   };
 
   placeTrade = () => {
-    let testData = [];
-    var i;
-    Axios.put(`http://localhost:5000/binance/twodaykline`, {
-      symbol: "BNBBTC"
-    }).then(res => {
-      res.data.map(e => {
-        testData.push({ Hours: 0, Price: e[1] });
-      });
-      for (i = 0; i < testData.length; i++) {
-        testData[47 - i].Hours = i;
-      }
-      this.setState({ testData, infoLoadToggle: !this.state.infoLoadToggle });
+    let dataArray = [];
+    Axios.get("http://localhost:5000/altapi/topstories").then(res => {
+      res.data.articles.map(e => dataArray.push(e.title));
+      this.setState({ testData: dataArray });
     });
-    return console.log(testData);
   };
 
   render() {
+    // const data = [
+    //   "Racing car sprays burning fuel into crowd.",
+    //   "Japanese princess to wed commoner.",
+    //   "Australian walks 100km after outback crash.",
+    //   "Man charged over missing wedding girl.",
+    //   "Los Angeles battles huge wildfires."
+    // ];
     return (
       <div>
         <h1>Hello from the Test Page</h1>
         <button onClick={this.placeTrade}>Test Button</button>
-        {this.state.infoLoadToggle == false ? (
+        <List
+          size="large"
+          header={<div>Bitcoin News:</div>}
+          bordered
+          dataSource={this.state.testData}
+          renderItem={item => <List.Item>{item}</List.Item>}
+        />
+      </div>
+    );
+  }
+}
+
+export default TestPage;
+
+// placeTrade = () => {
+//   let testData = [];
+//   var i;
+//   Axios.put(`http://localhost:5000/altapi/twodaykline`, {
+//     symbol: "BNBBTC"
+//   }).then(res => {
+//     res.data.map(e => {
+//       testData.push({ Hours: 0, Price: e[1] });
+//     });
+//     for (i = 0; i < testData.length; i++) {
+//       testData[47 - i].Hours = i;
+//     }
+//     this.setState({ testData, infoLoadToggle: !this.state.infoLoadToggle });
+//   });
+//   return console.log(testData);
+// };
+
+{
+  /* {this.state.infoLoadToggle == false ? (
           ""
         ) : (
           <VictoryChart theme={VictoryTheme.material} domainPadding={20}>
@@ -86,10 +118,5 @@ class TestPage extends React.Component {
             />
             <VictoryLine data={this.state.testData} x="Hours" y="Price" />
           </VictoryChart>
-        )}
-      </div>
-    );
-  }
+        )} */
 }
-
-export default TestPage;

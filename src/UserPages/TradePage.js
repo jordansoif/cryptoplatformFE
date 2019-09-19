@@ -40,7 +40,7 @@ class TradePage extends React.Component {
   tradeTypeInput = e => {
     if (e[0] == "Buy") {
       var mapCurrency = [];
-      Axios.get(`http://localhost:5000/binance/getallsymbols`).then(res => {
+      Axios.get(`http://localhost:5000/altapi/getallsymbols`).then(res => {
         res.data.map(e => {
           if (e.symbol.slice(-3) === "BTC") {
             mapCurrency.push({ value: e.symbol, label: e.symbol });
@@ -114,7 +114,7 @@ class TradePage extends React.Component {
 
   calcTradeValue = () => {
     if (this.state.selectedTradeType == "Buy") {
-      Axios.put("http://localhost:5000/binance/getsymbolinfo", {
+      Axios.put("http://localhost:5000/altapi/getsymbolinfo", {
         symbol: this.state.selectedSymbol
       }).then(res => {
         var parsedData = parseFloat(res.data.price);
@@ -128,7 +128,7 @@ class TradePage extends React.Component {
       });
     }
     if (this.state.selectedTradeType == "Sell") {
-      Axios.put("http://localhost:5000/binance/getsymbolinfo", {
+      Axios.put("http://localhost:5000/altapi/getsymbolinfo", {
         symbol: this.state.selectedSymbol
       }).then(res => {
         var parsedData = parseFloat(res.data.price);
