@@ -12,6 +12,13 @@ import { autoHeader } from "../api";
 import { bindActionCreators } from "Redux";
 import { connect } from "react-redux";
 
+// const testFunction = (username, password) => {
+//   console.log("inside loginUser");
+//   return () => {
+//     return console.log("inside loginUser 2");
+//   };
+// };
+
 class LoginPage extends React.Component {
   state = {
     userName: "",
@@ -21,62 +28,22 @@ class LoginPage extends React.Component {
     loginError: ""
   };
 
-  // handleLogin = e => {
-  //   e.preventDefault();
-  //   this.props.form.validateFields((err, values) => {
-  //     if (err == null) {
-  //       const user = values.username;
-  //       const password = values.password;
-  //       autoHeader("post", "auth/login", {
-  //         user_name: user,
-  //         password: password
-  //       }).then(res => {
-  //         if (res.data.access_token) {
-  //           cookie.save("token", res.data.access_token);
-  //           store.dispatch(loginUserDispatch(user));
-  //           return this.props.history.push("/homepage");
-  //         } else
-  //           return this.setState({ errorMessage: "An error has occurred." });
-  //       });
-  //     } else {
-  //       return this.setState({ errorMessage: err });
-  //     }
-  //   });
-  // };
-
   handleLogin = e => {
     e.preventDefault();
-    const { loginUser } = this.props;
     console.log("1");
+    const { loginUser } = this.props;
     this.props.form.validateFields((err, values) => {
+      console.log("2");
       if (err == null) {
-        console.log("2");
+        console.log("3");
         const user = values.username;
         const password = values.password;
-        Axios.post(`http://localhost:5000/auth/login`, {
-          user_name: values.username,
-          password: values.password
-        })
-          .then(res => {
-            console.log("3");
-            if (res.data.access_token) {
-              console.log("4");
-              cookie.save("token", res.data.access_token);
-              loginUser(user, password); //This is broken
-              return this.props.history.push("/homepage");
-            } else
-              return (
-                console.log("5"),
-                this.setState({ errorMessage: "An error has occurred." })
-              );
-          })
-          .catch(err => {
-            console.log("6");
-            this.setState({ errorMessage: err });
-          });
-      } else {
-        return console.log("7"), this.setState({ errorMessage: err });
-      }
+        console.log("4");
+        loginUser(user, password);
+        console.log("5");
+        this.setState({ errorMessage: err });
+        return console.log("6");
+      } else return console.log("7");
     });
   };
 
@@ -116,7 +83,7 @@ class LoginPage extends React.Component {
               />
             )}
           </Form.Item>
-          <p>{this.state.loading}</p>
+          <p>{this.state.errorMessage}</p>
           <Button
             type="primary"
             htmlType="submit"

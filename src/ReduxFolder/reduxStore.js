@@ -1,6 +1,5 @@
 import { createStore } from "Redux";
 import { loginFeature } from "./reduxReducers";
-import { connect } from "react-redux";
 
 let store = createStore(
   loginFeature,

@@ -10,6 +10,9 @@ const initialState = {
   loginError: null
 };
 
+// export const loginFeature = (state = initialState, action) => {
+// export default function (state = initialState, action) {
+
 export const loginFeature = (state = initialState, action) => {
   switch (action.type) {
     case USER_LOGIN_REQUEST:
@@ -19,6 +22,6 @@ export const loginFeature = (state = initialState, action) => {
     case USER_LOGIN_SUCCESS:
       return { ...state, loading: action.loading, currentUser: action.user };
     default:
-      return;
+      return state;
   }
 };

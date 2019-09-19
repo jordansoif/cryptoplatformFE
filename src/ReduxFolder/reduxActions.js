@@ -1,4 +1,5 @@
 import Axios from "axios";
+import cookie from "react-cookies";
 
 export const USER_LOGIN_REQUEST = "USER_LOGIN_REQUEST";
 export const USER_LOGIN_FAILURE = "USER_LOGIN_FAILURE";
@@ -22,18 +23,23 @@ const loginUserSuccess = user => ({
 });
 
 export const loginUser = (username, password) => {
-  return dispatch => {
-    dispatch(loginUserRequest());
-    Axios.put("http://localhost:5000/auth/login", {
-      user_name: username,
-      password: password
-    })
-      .then(res => {
-        // the post request currently returns "return {"access_token": access_token}, 200"
-        dispatch(loginUserSuccess(username));
-      })
-      .catch(err => {
-        dispatch(loginUserFailure(err));
-      });
+  console.log("inside loginUser");
+  return () => {
+    //was dispatch
+    console.log("inside loginUser 2");
   };
+  // dispatch(loginUserRequest());
+  // Axios.post("http://localhost:5000/auth/login", {
+  //   user_name: username,
+  //   password: password
+  // })
+  //   .then(res => {
+  //     // cookie.save("token", res.data.access_token);
+  //     // this.props.history.push("/homepage");
+  //     dispatch(loginUserSuccess(username));
+  //   })
+  //   .catch(err => {
+  //     dispatch(loginUserFailure(err));
+  //   });
+  // };
 };
