@@ -1,8 +1,8 @@
 import { createStore } from "Redux";
-import { loginFeature } from "./reduxReducers";
+import { primaryReducer } from "./reduxReducers";
 
 let store = createStore(
-  loginFeature,
+  primaryReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 

@@ -1,27 +1,50 @@
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_FAILURE,
-  USER_LOGIN_SUCCESS
+  USER_LOGIN_SUCCESS,
+  TRADE_PURCHASE_CONFIRM,
+  TRADE_SALE_CONFIRM
 } from "./reduxActions";
+import { combineReducers } from "Redux";
 
 const initialState = {
   currentUser: null,
+  error: "",
   loading: null,
   loginError: null
 };
 
-// export const loginFeature = (state = initialState, action) => {
-// export default function (state = initialState, action) {
+export const primaryReducer = combineReducers({
+  loginFeature,
+  tradeConfirmation
+});
 
-export const loginFeature = (state = initialState, action) => {
+export function loginFeature(state = initialState, action) {
   switch (action.type) {
     case USER_LOGIN_REQUEST:
       return { ...state, loading: action.loading };
     case USER_LOGIN_FAILURE:
       return { ...state, loading: action.loading, error: action.error };
     case USER_LOGIN_SUCCESS:
-      return { ...state, loading: action.loading, currentUser: action.user };
+      return { ...state, loading: action.loading, currentUser: action.data };
     default:
       return state;
   }
-};
+}
+
+export function tradeConfirmation(state = initialState, action) {
+  switch (action.type) {
+    case TRADE_PURCHASE_CONFIRM:
+      return {
+        ...state,
+        orderType: action.orderType,
+        symbol: action.symbol,
+        totalShares: action.totalShares,
+        unitPrice: action.unitPrice
+      };
+    case TRADE_SALE_CONFIRM:
+      return;
+    default:
+      return state;
+  }
+}

@@ -5,6 +5,9 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
 import store from "/ReduxFolder/reduxStore";
 import { autoHeader } from "../api";
+import { bindActionCreators } from "Redux";
+import { connect } from "react-redux";
+import { tradePurchase, tradeSale } from "/ReduxFolder/reduxActions";
 
 const optionsBuySell = [
   {
@@ -148,13 +151,20 @@ class TradePage extends React.Component {
   };
 
   placeTrade = () => {
+    const { tradePurchase } = this.props;
     if (this.state.selectedTradeType == "Buy") {
       autoHeader("put", "trade/purchasecrypto", {
         symbol: this.state.selectedSymbol,
         cost_per_unit: this.state.pricePerShare,
         units_purchased: this.state.sharesToTrade
       }).then(res => console.log(res.data));
-      return console.log("Buy order successfully entered");
+      tradePurchase(
+        this.state.selectedTradeType,
+        this.state.selectedSymbol,
+        this.state.sharesToTrade,
+        this.state.pricePerShare
+      );
+      return this.props.history.push("/ticket");
     } else if (this.state.selectedTradeType == "Sell") {
       autoHeader("put", "trade/sellcrypto", {
         symbol: this.state.selectedSymbol,
@@ -273,4 +283,16 @@ class TradePage extends React.Component {
   }
 }
 
-export default TradePage;
+const mapStateToProps = state => {
+  console.log(state);
+  return {};
+};
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ tradePurchase, tradeSale }, dispatch);
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TradePage);
