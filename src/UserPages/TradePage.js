@@ -257,9 +257,9 @@ class TradePage extends React.Component {
           type="primary"
           disabled={
             false
-            // this.state.saleLots.length == 0 || this.state.sharesToTrade == 0
-            //   ? true
-            //   : false //NEEDS TO BE FIXED
+            // {  if (this.state.selectedTradeType == "Buy") {if (this.state.sharesToTrade !== 0){return true}} //NEED TO IMPLEMENT THIS ABOVE to setSate for an on/ogg switch for disabled
+            //   if (this.state.selectedTradeType == "Sell") {if (this.state.sale_lots.length !== 0){return true}}
+            //   else return false}
           }
         >
           Calculate Trade Value

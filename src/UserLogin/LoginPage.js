@@ -16,14 +16,17 @@ class LoginPage extends React.Component {
   state = {
     userName: "",
     password: "",
-    errorMessage: "",
-    loading: this.props.loading,
+    errorMessage: false,
+    loading: "",
     loginError: ""
   };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.currentUser) {
       this.props.history.push("/home");
+    }
+    if (nextProps.error) {
+      this.setState({ errorMessage: true });
     }
   }
 
@@ -75,8 +78,11 @@ class LoginPage extends React.Component {
               />
             )}
           </Form.Item>
-          <p>{this.state.loading == true ? "Loading..." : ""}</p>
-          <p>{this.state.errorMessage}</p>
+          <p>
+            {this.state.errorMessage
+              ? "Username/Password combination not found"
+              : ""}
+          </p>
           <Button
             type="primary"
             htmlType="submit"
@@ -95,7 +101,8 @@ class LoginPage extends React.Component {
 }
 
 const mapStateToProps = ({ loginFeature }) => ({
-  currentUser: loginFeature.currentUser
+  currentUser: loginFeature.currentUser,
+  error: loginFeature.error
 });
 
 const mapDispatchToProps = dispatch => ({
