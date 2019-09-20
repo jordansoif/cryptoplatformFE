@@ -7,7 +7,7 @@ import store from "/ReduxFolder/reduxStore";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
 import { InputNumber } from "antd";
-import { apiRequest  } from "../api";
+import { apiRequest } from "../api";
 
 class FundAccount extends React.Component {
   state = {
@@ -17,7 +17,7 @@ class FundAccount extends React.Component {
   };
 
   componentWillMount() {
-    apiRequest ("get", "info/getuserbitcoin").then(res => {
+    apiRequest("get", "info/getuserbitcoin").then(res => {
       this.setState({
         userBitcoin: res.data
       });
@@ -32,7 +32,7 @@ class FundAccount extends React.Component {
   };
 
   buttonClick = () => {
-    apiRequest ("put", "info/updatebitcoin", {
+    apiRequest("put", "info/updatebitcoin", {
       bitcoin: this.state.inputValue
     }).then(res =>
       this.setState({

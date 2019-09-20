@@ -43,7 +43,6 @@ class LoginPage extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-
     return (
       <div>
         <h1>Login Page:</h1>
