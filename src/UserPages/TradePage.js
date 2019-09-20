@@ -4,7 +4,7 @@ import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
 import store from "/ReduxFolder/reduxStore";
-import { autoHeader } from "../api";
+import { apiRequest } from "../api";
 import { bindActionCreators } from "Redux";
 import { connect } from "react-redux";
 import { tradePurchase, tradeSale } from "/ReduxFolder/reduxActions";
@@ -35,7 +35,7 @@ class TradePage extends React.Component {
   };
 
   componentWillMount() {
-    autoHeader("get", "info/getuserbitcoin").then(res =>
+    apiRequest("get", "info/getuserbitcoin").then(res =>
       this.setState({ currentUserBitcoin: res.data })
     );
   }
@@ -56,7 +56,7 @@ class TradePage extends React.Component {
       });
     } else if (e[0] == "Sell") {
       var mapCurrency = [];
-      autoHeader("get", "trade/getallsymbolholdings").then(res => {
+      apiRequest("get", "trade/getallsymbolholdings").then(res => {
         res.data.map(e =>
           mapCurrency.push({ value: e.symbol, label: e.symbol })
         );
@@ -73,7 +73,7 @@ class TradePage extends React.Component {
       if (e[0] == undefined) {
         return;
       }
-      autoHeader("put", "trade/getsymbolpurchaselots", {
+      apiRequest("put", "trade/getsymbolpurchaselots", {
         symbol: e[0]
       }).then(res => {
         const lotsToLoad = [...res.data];
@@ -153,7 +153,7 @@ class TradePage extends React.Component {
   placeTrade = () => {
     const { tradePurchase } = this.props;
     if (this.state.selectedTradeType == "Buy") {
-      autoHeader("put", "trade/purchasecrypto", {
+      apiRequest("put", "trade/purchasecrypto", {
         symbol: this.state.selectedSymbol,
         cost_per_unit: this.state.pricePerShare,
         units_purchased: this.state.sharesToTrade
@@ -166,7 +166,7 @@ class TradePage extends React.Component {
       );
       return this.props.history.push("/ticket");
     } else if (this.state.selectedTradeType == "Sell") {
-      autoHeader("put", "trade/sellcrypto", {
+      apiRequest("put", "trade/sellcrypto", {
         symbol: this.state.selectedSymbol,
         share_price: this.state.pricePerShare,
         trade_value_calc: this.state.tradeValueCalc,

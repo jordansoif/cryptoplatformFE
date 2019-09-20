@@ -8,7 +8,7 @@ const authHead = () => {
   return { Authorization: `Bearer ${token}` };
 };
 
-export const autoHeader = async (method, url, payload) => {
+export const apiRequest = async (method, url, payload) => {
   const header = authHead();
   if (method == "get") {
     const res = await Axios({

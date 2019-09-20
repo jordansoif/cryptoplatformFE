@@ -3,17 +3,13 @@ import { Form, Icon, Input, Button, Checkbox } from "antd";
 import Axios from "axios";
 import { BrowserRouter as Router, Link } from "react-router-dom";
 import store from "/ReduxFolder/reduxStore";
-import {
-  loginUserRequest,
-  loginUserFailure,
-  loginUserSuccess
-} from "/ReduxFolder/reduxActions";
+import * as actions from "../ReduxFolder/reduxActions";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
 import WrappedChangePasswordForm from "./ChangePassword";
 import cookie from "react-cookies";
-import { autoHeader } from "../api";
-import { bindActionCreators } from "Redux";
+import { apiRequest } from "../api";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 class LoginPage extends React.Component {
@@ -25,37 +21,28 @@ class LoginPage extends React.Component {
     loginError: ""
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.currentUser) {
+      this.props.history.push('/homepage')
+    }
+  }
+
   handleLogin = e => {
     e.preventDefault();
-    const { loginUserRequest, loginUserFailure, loginUserSuccess } = this.props;
-    loginUserRequest();
+    const { actions } = this.props;
     this.props.form.validateFields((err, values) => {
-      if (err == null) {
-        const user = values.username;
-        const password = values.password;
-        Axios.post("http://localhost:5000/auth/login", {
-          user_name: user,
-          password: password
-        })
-          .then(res => {
-            if (res.data.access_token) {
-              cookie.save("token", res.data.access_token);
-              loginUserSuccess(values.username);
-              return this.props.history.push("/homepage");
-            }
-          })
-          .catch(err => {
-            loginUserFailure(err);
-          });
+      if (err) {
+        return;
       }
 
-      return loginUserFailure("An error has occurred");
+      const user = values.username;
+      const password = values.password;
+      actions.loginUser(user, password)
     });
   };
 
   render() {
     const { getFieldDecorator } = this.props.form;
-
     return (
       <div>
         <h1>Login Page:</h1>
@@ -108,17 +95,13 @@ class LoginPage extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  console.log(state);
-  return {};
-};
+const mapStateToProps = ({ loginFeature }) => ({
+  currentUser: loginFeature.currentUser
+})
 
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    { loginUserRequest, loginUserFailure, loginUserSuccess },
-    dispatch
-  );
-};
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(actions, dispatch)
+})
 
 const WrappedNormalLoginForm = Form.create({ name: "normal_login" })(LoginPage);
 

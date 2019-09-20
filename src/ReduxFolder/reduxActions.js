@@ -1,5 +1,6 @@
 import Axios from "axios";
 import cookie from "react-cookies";
+import { apiRequest } from '../api'
 
 export const USER_LOGIN_REQUEST = "USER_LOGIN_REQUEST";
 export const USER_LOGIN_FAILURE = "USER_LOGIN_FAILURE";
@@ -53,3 +54,17 @@ export const tradeSale = () => {};
 //     });
 //   dispatch(loginUserRequest(false));
 // };
+export const loginUser = (username, password) => dispatch => {
+    //was dispatch
+  dispatch(loginUserRequest());
+  apiRequest('POST', '/auth/login', {
+    user_name: username,
+    password: password
+  }).then(res => {
+    dispatch(loginUserSuccess(username));
+    cookie.save("token", res.data.access_token);
+  })
+  .catch(err => {
+    dispatch(loginUserFailure(err));
+  });
+}
