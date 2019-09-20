@@ -4,7 +4,7 @@ import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
 import store from "/ReduxFolder/reduxStore";
-import { autoHeader } from "../api";
+import { apiRequest  } from "../api";
 
 const columns = [
   {
@@ -55,7 +55,7 @@ class RealizedGainLossPage extends React.Component {
   };
 
   componentWillMount() {
-    autoHeader("get", "info/getallrealized").then(res => {
+    apiRequest ("get", "info/getallrealized").then(res => {
       var dataArray = [];
       res.data.map(e => dataArray.push(e));
       this.setState({ data: dataArray });

@@ -4,7 +4,7 @@ import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
 import store from "/ReduxFolder/reduxStore";
-import { autoHeader } from "../api";
+import { apiRequest  } from "../api";
 
 const columns = [
   {
@@ -50,7 +50,7 @@ class HoldingsPage extends React.Component {
   };
 
   componentWillMount() {
-    autoHeader("get", "info/getallholdings").then(res => {
+    apiRequest ("get", "info/getallholdings").then(res => {
       var dataArray = [];
       res.data.map(e => dataArray.push(e));
       this.setState({ data: dataArray });
