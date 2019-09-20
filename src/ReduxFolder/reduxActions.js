@@ -37,7 +37,6 @@ export const tradeSale = () => {};
 
 export const loginUser = (username, password) => dispatch => {
   //was dispatch
-  console.log("I ran loginUser 1");
   dispatch(loginUserRequest());
   Axios.post("http://localhost:5000/auth/login", {
     user_name: username,

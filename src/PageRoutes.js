@@ -14,42 +14,43 @@ import HoldingsPage from "./UserPages/HoldingsPage";
 import RealizedGainLossPage from "./UserPages/RealizedGainLossPage";
 import NewsPage from "./UserPages/NewsPage";
 import TradeTicket from "./UserPages/TradeTicket";
+import HomePage from "./UserPages/HomePage";
 
-const loggedOut = () => {
-  return (
-    <div>
-      <Route component={WrappedNormalLoginForm} exact path="/" />
-      <Route component={CreateNewUser} exact path="/createuser" />
-      <Route
-        component={WrappedChangePasswordForm}
-        exact
-        path="/changepassword"
-      />
-    </div>
-  );
-};
+// const loggedOut = () => {
+//   return (
+//     <div>
+//       <Route component={WrappedNormalLoginForm} exact path="/" />
+//       <Route component={CreateNewUser} exact path="/createuser" />
+//       <Route
+//         component={WrappedChangePasswordForm}
+//         exact
+//         path="/changepassword"
+//       />
+//     </div>
+//   );
+// };
 
-const loggedIn = () => {
-  return (
-    <div>
-      <Route component={NavigationBar} />
-      <Route component={HoldingsPage} exact path="/holdings" />
-      <Route component={RealizedGainLossPage} exact path="/realizedtrades" />
-      <Route component={FundAccount} exact path="/fundaccount" />
-      <Route component={TradePage} exact path="/tradepage" />
-      <Route component={TestPage} exact path="/testpage" />
-    </div>
-  );
-};
+// const loggedIn = () => {
+//   return (
+//     <div>
+//       <Route component={NavigationBar} />
+//       <Route component={HoldingsPage} exact path="/holdings" />
+//       <Route component={RealizedGainLossPage} exact path="/realizedtrades" />
+//       <Route component={FundAccount} exact path="/fundaccount" />
+//       <Route component={TradePage} exact path="/tradepage" />
+//       <Route component={TestPage} exact path="/testpage" />
+//     </div>
+//   );
+// };
 
 class PageRoutes extends React.Component {
   state = {
     userLoginStatus: false
   };
 
-  loginChange = () => {
-    this.setState({ userLoginStatus: !userLoginStatus });
-  };
+  // loginChange = () => {
+  //   this.setState({ userLoginStatus: !userLoginStatus });
+  // };
 
   render() {
     return (
@@ -69,6 +70,7 @@ class PageRoutes extends React.Component {
           <Route component={TradeTicket} exact path="/ticket" />
           <Route component={WrappedNormalLoginForm} exact path="/" />
           <Route component={CreateNewUser} exact path="/createuser" />
+          <Route component={HomePage} exact path="/home" />
           <Route
             component={WrappedChangePasswordForm}
             exact

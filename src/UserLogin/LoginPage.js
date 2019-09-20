@@ -23,7 +23,7 @@ class LoginPage extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.currentUser) {
-      this.props.history.push("/homepage");
+      this.props.history.push("/home");
     }
   }
 
@@ -34,7 +34,6 @@ class LoginPage extends React.Component {
       if (err) {
         return;
       }
-      console.log("I ran handleLogin1");
       const user = values.username;
       const password = values.password;
       actions.loginUser(user, password);

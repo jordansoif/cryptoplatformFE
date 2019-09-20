@@ -127,7 +127,7 @@ class TradePage extends React.Component {
           tradeValueCalc: tradeValue,
           pricePerShare: parsedData
         });
-        return console.log(this.state.tradeValueCalc);
+        return;
       });
     }
     if (this.state.selectedTradeType == "Sell") {
@@ -145,7 +145,7 @@ class TradePage extends React.Component {
           pricePerShare: parsedData,
           sharesToTrade: sharesToSell
         });
-        return console.log(this.state.tradeValueCalc);
+        return;
       });
     } else return;
   };
@@ -284,7 +284,6 @@ class TradePage extends React.Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state);
   return {};
 };
 
