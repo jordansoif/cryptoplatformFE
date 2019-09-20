@@ -39,13 +39,13 @@ export const loginUser = (username, password) => dispatch => {
   //was dispatch
   console.log("I ran loginUser 1");
   dispatch(loginUserRequest());
-  apiRequest("POST", "/auth/login", {
+  Axios.post("http://localhost:5000/auth/login", {
     user_name: username,
     password: password
   })
     .then(res => {
-      dispatch(loginUserSuccess(username));
       cookie.save("token", res.data.access_token);
+      dispatch(loginUserSuccess(username));
     })
     .catch(err => {
       dispatch(loginUserFailure(err));
