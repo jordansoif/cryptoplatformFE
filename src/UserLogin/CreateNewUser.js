@@ -18,9 +18,15 @@ class CreateNewUser extends React.Component {
           Axios.post(`http://localhost:5000/auth/createuser`, {
             user_name: values.username,
             password: values.password
-          }).then(res => this.stateState({ resOutput: res.data }));
-        } else this.stateState({ resOutput: "Passwords do not match." });
-      } else this.stateState({ resOutput: "An Error has occurred." });
+          }).then(res => {
+            this.setState({ resOutput: res.data });
+          });
+        } else {
+          this.stateState({ resOutput: "Passwords do not match." });
+        }
+      } else {
+        this.stateState({ resOutput: "An Error has occurred." });
+      }
     });
   };
 

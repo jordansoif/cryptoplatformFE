@@ -15,17 +15,21 @@ class TradeTicket extends React.Component {
   };
 
   componentWillMount() {
-    const { state } = this.props;
+    const { reduxProps } = this.props;
     this.setState({
-      orderType: state.tradeConfirmation.orderType,
-      symbol: state.tradeConfirmation.symbol,
-      quantity: state.tradeConfirmation.totalShares,
-      unitPrice: state.tradeConfirmation.unitPrice
+      orderType: reduxProps.orderType,
+      symbol: reduxProps.symbol,
+      quantity: reduxProps.totalShares,
+      unitPrice: reduxProps.unitPrice
     });
   }
 
-  buttonClick = () => {
+  buttonClickHoldings = () => {
     return this.props.history.push("/holdings");
+  };
+
+  buttonClickRealized = () => {
+    return this.props.history.push("/realizedtrades");
   };
 
   render() {
@@ -38,10 +42,13 @@ class TradeTicket extends React.Component {
           <li>Quantity of Units: {this.state.quantity}</li>
           <li>Per Unit Price: {this.state.unitPrice}</li>
           {/* <li>Lots Sold: {this.state.orderType}</li> */}
-          <li></li>
-          <li></li>
         </ul>
-        <Button onClick={this.buttonClick}>Go To Holdings</Button>
+        <Button onClick={this.buttonClickHoldings}>Go To Holdings</Button>
+        {this.props.reduxProps.orderType == "Sell" ? (
+          <Button onClick={this.buttonClickRealized}>
+            Go To Realized Holdings
+          </Button>
+        ) : null}
       </div>
     );
   }
@@ -49,11 +56,7 @@ class TradeTicket extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    state
-    // orderType: state.orderType,
-    // symbol: state.symbol,
-    // totalShares: state.quantity,
-    // unitPrice: state.unitPrice
+    reduxProps: state.tradeConfirmation
   };
 };
 

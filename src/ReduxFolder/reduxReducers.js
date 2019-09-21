@@ -3,7 +3,8 @@ import {
   USER_LOGIN_FAILURE,
   USER_LOGIN_SUCCESS,
   TRADE_PURCHASE_CONFIRM,
-  TRADE_SALE_CONFIRM
+  TRADE_SALE_CONFIRM,
+  TRADE_ERROR
 } from "./reduxActions";
 import { combineReducers } from "Redux";
 
@@ -43,7 +44,20 @@ export function tradeConfirmation(state = initialState, action) {
         unitPrice: action.unitPrice
       };
     case TRADE_SALE_CONFIRM:
-      return;
+      return {
+        ...state,
+        orderType: action.orderType,
+        symbol: action.symbol,
+        totalShares: action.totalShares,
+        unitPrice: action.unitPrice,
+        tradeValue: action.tradeValue,
+        saleLots: action.saleLots
+      };
+    case TRADE_ERROR:
+      return {
+        ...state,
+        error: action.error
+      };
     default:
       return state;
   }

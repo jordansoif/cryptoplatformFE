@@ -10,46 +10,30 @@ const { SubMenu } = Menu;
 class NavigationBar extends React.Component {
   state = {};
 
-  handleClickHoldings = () => {
-    return this.props.history.push("/holdings");
-  };
-
-  handleClickTrade = () => {
-    return this.props.history.push("/tradepage");
-  };
-
-  handleClickFundAccount = () => {
-    return this.props.history.push("/fundaccount");
-  };
-
-  handleClickNews = () => {
-    return this.props.history.push("/news");
-  };
-
-  handleClickRealizedTrades = () => {
-    return this.props.history.push("/realizedtrades");
+  handleOnClick = e => {
+    return this.props.history.push(`/${e.key}`);
   };
 
   render() {
     return (
       <Menu mode="horizontal">
-        <Menu.Item key="Holdings" onClick={this.handleClickHoldings}>
+        <Menu.Item key="holdings" onClick={this.handleOnClick}>
           <Icon type="bank" />
           Holdings
         </Menu.Item>
-        <Menu.Item key="Trade" onClick={this.handleClickTrade}>
+        <Menu.Item key="tradepage" onClick={this.handleOnClick}>
           <Icon type="stock" />
           Trade
         </Menu.Item>
-        <Menu.Item key="Fund" onClick={this.handleClickFundAccount}>
+        <Menu.Item key="fundaccount" onClick={this.handleOnClick}>
           <Icon type="dollar" />
           Fund Account
         </Menu.Item>
-        <Menu.Item key="News" onClick={this.handleClickNews}>
+        <Menu.Item key="news" onClick={this.handleOnClick}>
           <Icon type="read" />
           News
         </Menu.Item>
-        <Menu.Item key="Realized" onClick={this.handleClickRealizedTrades}>
+        <Menu.Item key="realizedtrades" onClick={this.handleOnClick}>
           <Icon type="check-square" />
           Realized Trades
         </Menu.Item>

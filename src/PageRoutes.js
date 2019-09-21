@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import store from "/ReduxFolder/reduxStore";
-import { Provider } from "react-redux";
+import { Provider, connect } from "react-redux";
 import ReactDOM from "react-dom";
 import WrappedNormalLoginForm from "./UserLogin/LoginPage";
 import CreateNewUser from "./UserLogin/CreateNewUser";
@@ -16,47 +16,26 @@ import NewsPage from "./UserPages/NewsPage";
 import TradeTicket from "./UserPages/TradeTicket";
 import HomePage from "./UserPages/HomePage";
 
-// const loggedOut = () => {
-//   return (
-//     <div>
-//       <Route component={WrappedNormalLoginForm} exact path="/" />
-//       <Route component={CreateNewUser} exact path="/createuser" />
-//       <Route
-//         component={WrappedChangePasswordForm}
-//         exact
-//         path="/changepassword"
-//       />
-//     </div>
-//   );
-// };
-
-// const loggedIn = () => {
-//   return (
-//     <div>
-//       <Route component={NavigationBar} />
-//       <Route component={HoldingsPage} exact path="/holdings" />
-//       <Route component={RealizedGainLossPage} exact path="/realizedtrades" />
-//       <Route component={FundAccount} exact path="/fundaccount" />
-//       <Route component={TradePage} exact path="/tradepage" />
-//       <Route component={TestPage} exact path="/testpage" />
-//     </div>
-//   );
-// };
-
 class PageRoutes extends React.Component {
-  state = {
-    userLoginStatus: false
-  };
+  state = { loggedIn: false };
 
-  // loginChange = () => {
-  //   this.setState({ userLoginStatus: !userLoginStatus });
-  // };
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.currentUser) {
+      console.log(nextProp.currentUser);
+      return this.setState({ loggedIn: true });
+    }
+  }
+
+  //Find way for props to be accessible on this
+  //page so the nav bar can be displayed only when user loggedin
 
   render() {
     return (
       <Provider store={store}>
         <Router>
-          <Route component={NavigationBar} />
+          {this.state.loggedIn == true ? (
+            <Route component={NavigationBar} />
+          ) : null}
           <Route component={HoldingsPage} exact path="/holdings" />
           <Route
             component={RealizedGainLossPage}
@@ -77,10 +56,22 @@ class PageRoutes extends React.Component {
             path="/changepassword"
           />
         </Router>
+        <button onClick={this.test}>test</button>
       </Provider>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    state
+  };
+};
+
+connect(
+  mapStateToProps,
+  null
+)(PageRoutes);
 
 ReactDOM.render(
   React.createElement(PageRoutes),

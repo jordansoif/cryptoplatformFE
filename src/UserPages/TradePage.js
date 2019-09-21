@@ -7,7 +7,7 @@ import store from "/ReduxFolder/reduxStore";
 import { apiRequest } from "../api";
 import { bindActionCreators } from "Redux";
 import { connect } from "react-redux";
-import { tradePurchase, tradeSale } from "/ReduxFolder/reduxActions";
+import { tradeTicketInfo } from "../ReduxFolder/reduxActions";
 
 const optionsBuySell = [
   {
@@ -31,13 +31,23 @@ class TradePage extends React.Component {
     pricePerShare: 0, //share price for buy/sell
     currencySelection: [], //shares shown in currency selector
     lotsToLoad: [], //share lots shown for sale when order/crypto is selected
-    saleLots: [] // share lots selected to be sold
+    saleLots: [], // share lots selected to be sold
+    errorMessage: false
   };
 
   componentWillMount() {
     apiRequest("get", "info/getuserbitcoin").then(res =>
       this.setState({ currentUserBitcoin: res.data })
     );
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.orderType) {
+      this.props.history.push("/ticket");
+    }
+    if (nextProps.error) {
+      this.setState({ errorMessage: true });
+    }
   }
 
   tradeTypeInput = e => {
@@ -151,30 +161,15 @@ class TradePage extends React.Component {
   };
 
   placeTrade = () => {
-    const { tradePurchase } = this.props;
-    if (this.state.selectedTradeType == "Buy") {
-      apiRequest("put", "trade/purchasecrypto", {
-        symbol: this.state.selectedSymbol,
-        cost_per_unit: this.state.pricePerShare,
-        units_purchased: this.state.sharesToTrade
-      }).then(res => console.log(res.data));
-      tradePurchase(
-        this.state.selectedTradeType,
-        this.state.selectedSymbol,
-        this.state.sharesToTrade,
-        this.state.pricePerShare
-      );
-      return this.props.history.push("/ticket");
-    } else if (this.state.selectedTradeType == "Sell") {
-      apiRequest("put", "trade/sellcrypto", {
-        symbol: this.state.selectedSymbol,
-        share_price: this.state.pricePerShare,
-        trade_value_calc: this.state.tradeValueCalc,
-        total_shares_being_sold: this.state.sharesToTrade,
-        sale_lots: this.state.saleLots
-      });
-      return console.log("Sell order successfully entered");
-    } else console.log("Order was unsuccessful.");
+    const { tradeTicketInfo } = this.props;
+    tradeTicketInfo(
+      this.state.selectedTradeType,
+      this.state.selectedSymbol,
+      this.state.sharesToTrade,
+      this.state.pricePerShare,
+      this.state.tradeValueCalc,
+      this.state.saleLots
+    );
   };
 
   render() {
@@ -271,6 +266,11 @@ class TradePage extends React.Component {
           ""
         )}
         <br />
+        <p>
+          {this.state.errorMessage
+            ? "An error has occurred, trade was not placed"
+            : ""}
+        </p>
         <Button
           onClick={this.placeTrade}
           type="danger"
@@ -283,15 +283,51 @@ class TradePage extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {};
-};
+const mapStateToProps = ({ tradeConfirmation }) => ({
+  orderType: tradeConfirmation.orderType,
+  error: tradeConfirmation.error
+});
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ tradePurchase, tradeSale }, dispatch);
+  return bindActionCreators({ tradeTicketInfo }, dispatch);
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(TradePage);
+
+// placeTrade = () => {
+//   const { tradeBuy } = this.props;
+//   if (this.state.selectedTradeType == "Buy") {
+//     apiRequest("put", "trade/purchasecrypto", {
+//       symbol: this.state.selectedSymbol,
+//       cost_per_unit: this.state.pricePerShare,
+//       units_purchased: this.state.sharesToTrade
+//     }).then(res => console.log(res.data));
+//     tradeBuy(
+//       this.state.selectedTradeType,
+//       this.state.selectedSymbol,
+//       this.state.sharesToTrade,
+//       this.state.pricePerShare
+//     );
+//     return this.props.history.push("/ticket");
+//   } else if (this.state.selectedTradeType == "Sell") {
+//     apiRequest("put", "trade/sellcrypto", {
+//       symbol: this.state.selectedSymbol,
+//       share_price: this.state.pricePerShare,
+//       trade_value_calc: this.state.tradeValueCalc,
+//       total_shares_being_sold: this.state.sharesToTrade,
+//       sale_lots: this.state.saleLots
+//     });
+//     tradeSell(
+//       this.state.selectedTradeType,
+//       this.state.selectedSymbol,
+//       this.state.pricePerShare,
+//       this.state.tradeValueCalc,
+//       this.state.sharesToTrade,
+//       this.state.saleLots
+//     );
+//     return console.log("Sell order successfully entered");
+//   } else console.log("Order was unsuccessful.");
+// };
