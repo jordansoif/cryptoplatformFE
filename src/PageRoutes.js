@@ -26,9 +26,9 @@ class PageRoutes extends React.Component {
   //   }
   // }
 
-  test = () => {
-    return this.setState({ loggedIn: !this.state.loggedIn });
-  };
+  // test = () => {
+  //   return this.setState({ loggedIn: !this.state.loggedIn });
+  // };
 
   //Find way for props to be accessible on this
   //page so the nav bar can be displayed only when user loggedin
@@ -58,7 +58,7 @@ class PageRoutes extends React.Component {
             path="/changepassword"
           />
         </Router>
-        <button onClick={this.test}>Test button</button>
+        {/* <button onClick={this.test}>Test button</button> */}
       </Provider>
     );
   }

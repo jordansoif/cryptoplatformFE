@@ -73,6 +73,7 @@ class TradePage extends React.Component {
     } else if (e[0] == "Sell") {
       var mapCurrency = [];
       apiRequest("get", "trade/getallsymbolholdings").then(res => {
+        console.log(res);
         res.data.map(e =>
           mapCurrency.push({ value: e.symbol, label: e.symbol })
         );
@@ -136,7 +137,7 @@ class TradePage extends React.Component {
   };
 
   calcTradeValue = () => {
-    // NEEDS CLEANING
+    // NEEDS CLEANING, ALL THE SAME BEFORE THE .then
     if (this.state.selectedTradeType == "Buy") {
       apiRequest("put", "altapi/getsymbolinfo", {
         symbol: this.state.selectedSymbol
@@ -159,7 +160,7 @@ class TradePage extends React.Component {
         symbol: this.state.selectedSymbol
       })
         .then(res => {
-          var sharesToSell;
+          var sharesToSell = 0;
           this.state.saleLots.map(e => {
             sharesToSell = e.value + sharesToSell;
           });
@@ -177,8 +178,6 @@ class TradePage extends React.Component {
     } else return;
   };
 
-  // Purchase not working due to intitializing Holdings without a default purchase_lots
-  // holdings being deleted so I will reconfigure once changes are made to backend
   placeTrade = () => {
     const { tradeTicketInfo } = this.props;
     tradeTicketInfo(
@@ -311,38 +310,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(TradePage);
-
-// placeTrade = () => {
-//   const { tradeBuy } = this.props;
-//   if (this.state.selectedTradeType == "Buy") {
-//     apiRequest("put", "trade/purchasecrypto", {
-//       symbol: this.state.selectedSymbol,
-//       cost_per_unit: this.state.pricePerShare,
-//       units_purchased: this.state.sharesToTrade
-//     }).then(res => console.log(res.data));
-//     tradeBuy(
-//       this.state.selectedTradeType,
-//       this.state.selectedSymbol,
-//       this.state.sharesToTrade,
-//       this.state.pricePerShare
-//     );
-//     return this.props.history.push("/ticket");
-//   } else if (this.state.selectedTradeType == "Sell") {
-//     apiRequest("put", "trade/sellcrypto", {
-//       symbol: this.state.selectedSymbol,
-//       share_price: this.state.pricePerShare,
-//       trade_value_calc: this.state.tradeValueCalc,
-//       total_shares_being_sold: this.state.sharesToTrade,
-//       sale_lots: this.state.saleLots
-//     });
-//     tradeSell(
-//       this.state.selectedTradeType,
-//       this.state.selectedSymbol,
-//       this.state.pricePerShare,
-//       this.state.tradeValueCalc,
-//       this.state.sharesToTrade,
-//       this.state.saleLots
-//     );
-//     return console.log("Sell order successfully entered");
-//   } else console.log("Order was unsuccessful.");
-// };
