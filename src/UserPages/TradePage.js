@@ -9,6 +9,9 @@ import { bindActionCreators } from "Redux";
 import { connect } from "react-redux";
 import { tradeTicketInfo } from "../ReduxFolder/reduxActions";
 
+//Page partially cleaned, waiting on backend changes to db before finalizing
+//Unmount resOutput and error when entering new information
+
 const optionsBuySell = [
   {
     value: "Buy",
@@ -32,7 +35,7 @@ class TradePage extends React.Component {
     currencySelection: [], //shares shown in currency selector
     lotsToLoad: [], //share lots shown for sale when order/crypto is selected
     saleLots: [], // share lots selected to be sold
-    errorMessage: false
+    error: null
   };
 
   componentWillMount() {
@@ -46,14 +49,17 @@ class TradePage extends React.Component {
       this.props.history.push("/ticket");
     }
     if (nextProps.error) {
-      this.setState({ errorMessage: true });
+      this.setState({
+        error: "An error has occurred, the trade was not placed"
+      });
     }
   }
 
   tradeTypeInput = e => {
+    // NEEDS CLEANING
     if (e[0] == "Buy") {
       var mapCurrency = [];
-      Axios.get(`http://localhost:5000/altapi/getallsymbols`).then(res => {
+      apiRequest("get", "altapi/getallsymbols").then(res => {
         res.data.map(e => {
           if (e.symbol.slice(-3) === "BTC") {
             mapCurrency.push({ value: e.symbol, label: e.symbol });
@@ -79,15 +85,19 @@ class TradePage extends React.Component {
   };
 
   symbolInput = e => {
+    // NEEDS CLEANING
     if (this.state.selectedTradeType == "Sell") {
       if (e[0] == undefined) {
-        return;
+        return this.setState({ error: "Please input a trade type." });
       }
       apiRequest("put", "trade/getsymbolpurchaselots", {
         symbol: e[0]
       }).then(res => {
-        const lotsToLoad = [...res.data];
-        this.setState({ lotsToLoad, selectedSymbol: e[0], saleLots: [] });
+        this.setState({
+          lotsToLoad: [...res.data],
+          selectedSymbol: e[0],
+          saleLots: []
+        });
       });
     } else this.setState({ selectedSymbol: e[0] });
   };
@@ -97,7 +107,7 @@ class TradePage extends React.Component {
   };
 
   lotsToBeSold = (e, key) => {
-    var copySaleLots = this.state.saleLots; //Runs every yime so copy current saleLots
+    var copySaleLots = this.state.saleLots; //Runs every Time so copy current saleLots
     const filterIndex = copySaleLots.filter(
       //filter to see if saleLot already exists for this lot
       obj => obj.saleLotInfo.id == key.id
@@ -126,40 +136,49 @@ class TradePage extends React.Component {
   };
 
   calcTradeValue = () => {
+    // NEEDS CLEANING
     if (this.state.selectedTradeType == "Buy") {
-      Axios.put("http://localhost:5000/altapi/getsymbolinfo", {
+      apiRequest("put", "altapi/getsymbolinfo", {
         symbol: this.state.selectedSymbol
-      }).then(res => {
-        var parsedData = parseFloat(res.data.price);
-        var shares = this.state.sharesToTrade;
-        var tradeValue = parsedData * shares;
-        this.setState({
-          tradeValueCalc: tradeValue,
-          pricePerShare: parsedData
+      })
+        .then(res => {
+          return this.setState({
+            tradeValueCalc:
+              parseFloat(res.data.price) * this.state.sharesToTrade,
+            pricePerShare: parseFloat(res.data.price)
+          });
+        })
+        .catch(err => {
+          return this.setState({
+            error: "An error has occurred in calculating the trade value."
+          });
         });
-        return;
-      });
     }
     if (this.state.selectedTradeType == "Sell") {
-      Axios.put("http://localhost:5000/altapi/getsymbolinfo", {
+      apiRequest("put", "altapi/getsymbolinfo", {
         symbol: this.state.selectedSymbol
-      }).then(res => {
-        var parsedData = parseFloat(res.data.price);
-        var sharesToSell = 0;
-        this.state.saleLots.map(e => {
-          sharesToSell = e.value + sharesToSell;
+      })
+        .then(res => {
+          var sharesToSell;
+          this.state.saleLots.map(e => {
+            sharesToSell = e.value + sharesToSell;
+          });
+          return this.setState({
+            tradeValueCalc: sharesToSell * parseFloat(res.data.price),
+            pricePerShare: parseFloat(res.data.price),
+            sharesToTrade: sharesToSell
+          });
+        })
+        .catch(err => {
+          return this.setState({
+            error: "An error has occurred in calculating the trade value."
+          });
         });
-        var tradeValue = sharesToSell * parsedData;
-        this.setState({
-          tradeValueCalc: tradeValue,
-          pricePerShare: parsedData,
-          sharesToTrade: sharesToSell
-        });
-        return;
-      });
     } else return;
   };
 
+  // Purchase not working due to intitializing Holdings without a default purchase_lots
+  // holdings being deleted so I will reconfigure once changes are made to backend
   placeTrade = () => {
     const { tradeTicketInfo } = this.props;
     tradeTicketInfo(
@@ -220,7 +239,7 @@ class TradePage extends React.Component {
           placeholder="Buy / Sell"
           onChange={this.tradeTypeInput}
         />
-        <br />
+
         <br />
         <p>Select CryptoCurrency:</p>
         <Cascader
@@ -266,11 +285,7 @@ class TradePage extends React.Component {
           ""
         )}
         <br />
-        <p>
-          {this.state.errorMessage
-            ? "An error has occurred, trade was not placed"
-            : ""}
-        </p>
+        <p>{this.state.error}</p>
         <Button
           onClick={this.placeTrade}
           type="danger"

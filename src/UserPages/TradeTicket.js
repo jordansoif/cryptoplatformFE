@@ -6,6 +6,8 @@ import { getState } from "Redux";
 import store from "/ReduxFolder/reduxStore";
 import { connect } from "react-redux";
 
+// Page not yet cleaned, awaiting backend changes before completing this page
+
 class TradeTicket extends React.Component {
   state = {
     orderType: "",

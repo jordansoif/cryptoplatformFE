@@ -14,11 +14,10 @@ import { connect } from "react-redux";
 
 class LoginPage extends React.Component {
   state = {
-    userName: "",
-    password: "",
-    errorMessage: false,
-    loading: "",
-    loginError: ""
+    userName: null,
+    password: null,
+    error: null,
+    loading: null
   };
 
   componentWillReceiveProps(nextProps) {
@@ -26,7 +25,10 @@ class LoginPage extends React.Component {
       this.props.history.push("/home");
     }
     if (nextProps.error) {
-      this.setState({ errorMessage: true });
+      this.setState({ error: nextProps.error });
+    }
+    if (nextProps.loading) {
+      this.setState({ laoding: nextProps.loading });
     }
   }
 
@@ -35,11 +37,9 @@ class LoginPage extends React.Component {
     const { actions } = this.props;
     this.props.form.validateFields((err, values) => {
       if (err) {
-        return;
+        return this.setState({ error: err });
       }
-      const user = values.username;
-      const password = values.password;
-      actions.loginUser(user, password);
+      return actions.loginUser(values.username, values.password);
     });
   };
 
@@ -78,11 +78,8 @@ class LoginPage extends React.Component {
               />
             )}
           </Form.Item>
-          <p>
-            {this.state.errorMessage
-              ? "Username/Password combination not found"
-              : ""}
-          </p>
+          <p>{this.state.loading ? "Loading..." : null}</p>
+          <p>{this.state.error}</p>
           <Button
             type="primary"
             htmlType="submit"
@@ -102,7 +99,8 @@ class LoginPage extends React.Component {
 
 const mapStateToProps = ({ loginFeature }) => ({
   currentUser: loginFeature.currentUser,
-  error: loginFeature.error
+  error: loginFeature.error,
+  loading: loginFeature.loading
 });
 
 const mapDispatchToProps = dispatch => ({

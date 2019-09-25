@@ -6,26 +6,35 @@ import { getState } from "Redux";
 import store from "/ReduxFolder/reduxStore";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
+import { apiRequest } from "../api";
 
 class CreateNewUser extends React.Component {
-  state = { resOutput: "" };
+  state = { resOutput: null, error: null };
+
+  //Unmount resOutput and error when entering new information
 
   handleCreateNewUser = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         if (values.password === values.passwordConfirm) {
-          Axios.post(`http://localhost:5000/auth/createuser`, {
+          apiRequest("post", "auth/createuser", {
             user_name: values.username,
             password: values.password
-          }).then(res => {
-            this.setState({ resOutput: res.data });
-          });
+          })
+            .then(res => {
+              this.setState({ resOutput: res.data });
+            })
+            .catch(err => {
+              this.setState({
+                error: "An error has occurred, please try again."
+              });
+            });
         } else {
-          this.stateState({ resOutput: "Passwords do not match." });
+          this.setState({ error: "Passwords do not match." });
         }
       } else {
-        this.stateState({ resOutput: "An Error has occurred." });
+        this.setState({ error: "An Error has occurred." });
       }
     });
   };
@@ -78,6 +87,7 @@ class CreateNewUser extends React.Component {
             )}
           </Form.Item>
           <p>{this.state.resOutput}</p>
+          <p>{this.state.error}</p>
           <Form.Item>
             <Button
               type="primary"

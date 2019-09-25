@@ -10,7 +10,7 @@ import { combineReducers } from "Redux";
 
 const initialState = {
   currentUser: null,
-  error: "",
+  error: null,
   loading: null,
   loginError: null
 };
@@ -19,6 +19,8 @@ export const primaryReducer = combineReducers({
   loginFeature,
   tradeConfirmation
 });
+
+// MAKE REDUCERS HANDLE THEIR OWN PORTION OF THE STORE, CURRENTLY SPLITTING A MATCHING STORE
 
 export function loginFeature(state = initialState, action) {
   switch (action.type) {

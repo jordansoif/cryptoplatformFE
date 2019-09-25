@@ -6,6 +6,8 @@ import { getState } from "Redux";
 import store from "/ReduxFolder/reduxStore";
 import { apiRequest } from "../api";
 
+// EVERYTHING NEEDS UPDATE AFTER BACKEND CHANGES TO ELIMINATE HOLDINGS DOCUMENT
+
 const columns = [
   {
     title: "CryptoCurrency",

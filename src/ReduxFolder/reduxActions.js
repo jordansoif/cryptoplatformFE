@@ -57,9 +57,8 @@ export const tradeError = () => ({
 });
 
 export const loginUser = (username, password) => dispatch => {
-  //was dispatch
   dispatch(loginUserRequest());
-  Axios.post("http://localhost:5000/auth/login", {
+  apiRequest("post", "auth/login", {
     user_name: username,
     password: password
   })
@@ -68,7 +67,11 @@ export const loginUser = (username, password) => dispatch => {
       dispatch(loginUserSuccess(username));
     })
     .catch(err => {
-      dispatch(loginUserFailure(err));
+      dispatch(
+        loginUserFailure(
+          "Login request failed, username/password entered was not found."
+        )
+      );
     });
 };
 

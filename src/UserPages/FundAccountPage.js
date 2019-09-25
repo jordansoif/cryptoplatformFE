@@ -6,14 +6,16 @@ import { getState } from "Redux";
 import store from "/ReduxFolder/reduxStore";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
-import { InputNumber } from "antd";
 import { apiRequest } from "../api";
+
+//Unmount resOutput and error when entering new information
 
 class FundAccount extends React.Component {
   state = {
     userBitcoinNow: 0,
-    inputValue: 0,
-    resOutput: ""
+    inputValue: null,
+    resOutput: null,
+    error: null
   };
 
   componentWillMount() {
@@ -31,15 +33,30 @@ class FundAccount extends React.Component {
     });
   };
 
-  buttonClick = () => {
+  updateBitcoinButton = () => {
+    // NEEDS CLEANING
+    console.log(this.state.inputValue);
+    if (
+      this.state.inputValue === 0 ||
+      this.state.inputValue === null ||
+      isNaN(this.state.inputValue)
+    ) {
+      return this.setState({ error: "Please input a valid value." });
+    }
     apiRequest("put", "info/updatebitcoin", {
       bitcoin: this.state.inputValue
-    }).then(res =>
-      this.setState({
-        resOutput: res.data,
-        userBitcoin: this.state.userBitcoin + this.state.inputValue
+    })
+      .then(res => {
+        return this.setState({
+          resOutput: res.data,
+          userBitcoin: this.state.userBitcoin + this.state.inputValue
+        });
       })
-    );
+      .catch(err => {
+        return this.setState({
+          error: "An error has occurred, please try again."
+        });
+      });
   };
 
   render() {
@@ -53,7 +70,8 @@ class FundAccount extends React.Component {
           placeholder="Enter Value to add to account."
         />
         <p>{this.state.resOutput}</p>
-        <Button type="primary" onClick={this.buttonClick}>
+        <p>{this.state.error}</p>
+        <Button type="primary" onClick={this.updateBitcoinButton}>
           Add to Account
         </Button>
       </div>

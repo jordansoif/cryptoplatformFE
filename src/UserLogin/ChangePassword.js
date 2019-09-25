@@ -5,13 +5,14 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
 import ReactDOM from "react-dom";
 import mountNode from "react-dom";
+import { apiRequest } from "../api";
 
-class CreateNewUser extends React.Component {
+//Unmount resOutput and error when entering new information
+
+class ChangePassword extends React.Component {
   state = {
-    userName: "",
-    password: "",
-    passwordConfirm: "",
-    resOutput: ""
+    error: null,
+    resOutput: null
   };
 
   handleChangePassword = e => {
@@ -19,13 +20,21 @@ class CreateNewUser extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         if (values.newPassword === values.newPasswordConfirm) {
-          Axios.put(`http://localhost:5000/auth/changepassword`, {
+          apiRequest("put", "auth/changepassword", {
             user_name: values.username,
             password: values.currentPassword,
             new_password: values.newPassword
-          }).then(res => this.setState({ resOutput: res.data }));
-        } else this.setState({ resOutput: "Passwords do not match." });
-      } else this.setState({ resOutput: "An Error has occurred." });
+          })
+            .then(res => {
+              this.setState({ resOutput: res.data });
+            })
+            .catch(err => {
+              this.setState({
+                error: "An error has occurred, please try again."
+              });
+            });
+        } else this.setState({ error: "Passwords do not match." });
+      } else this.setState({ error: "An Error has occurred." });
     });
   };
 
@@ -94,6 +103,7 @@ class CreateNewUser extends React.Component {
             )}
           </Form.Item>
           <p>{this.state.resOutput}</p>
+          <p>{this.state.error}</p>
           <Form.Item>
             <Button
               type="primary"
@@ -111,7 +121,7 @@ class CreateNewUser extends React.Component {
 }
 
 const WrappedChangePasswordForm = Form.create({ name: "normal_login" })(
-  CreateNewUser
+  ChangePassword
 );
 
 export default WrappedChangePasswordForm;

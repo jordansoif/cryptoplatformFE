@@ -4,7 +4,7 @@ import Axios from "axios";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { getState } from "Redux";
 import store from "/ReduxFolder/reduxStore";
-import { thisExpression } from "@babel/types";
+import { apiRequest } from "../api";
 
 class NewsPage extends React.Component {
   state = {
@@ -14,7 +14,7 @@ class NewsPage extends React.Component {
 
   componentWillMount() {
     let dataArray = [];
-    Axios.get("http://localhost:5000/altapi/topstories").then(res => {
+    apiRequest("get", "altapi/topstories").then(res => {
       res.data.articles.map(e => dataArray.push(e.title));
       this.setState({
         fullData: dataArray,

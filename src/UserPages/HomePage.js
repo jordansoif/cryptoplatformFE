@@ -14,7 +14,7 @@ class HomePage extends React.Component {
         <p>
           Work in Progress. Will be adding 48 hour charts for 3 main currencies
           that user chooses. info to get chart info already set up on backend,
-          having diffivulty finding a good chart library for setting up the
+          having difficulty finding a good chart library for setting up the
           charts. Some of the work for the charts is already set up in the test
           page code
         </p>

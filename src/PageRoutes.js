@@ -17,14 +17,18 @@ import TradeTicket from "./UserPages/TradeTicket";
 import HomePage from "./UserPages/HomePage";
 
 class PageRoutes extends React.Component {
-  state = { loggedIn: false };
+  state = { loggedIn: true };
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.currentUser) {
-      console.log(nextProp.currentUser);
-      return this.setState({ loggedIn: true });
-    }
-  }
+  // componentWillUpdate() {
+  //   if (store.getState().loginFeature.currentUser !== null) {
+  //     console.log(store.getState().loginFeature.currentUser);
+  //     return this.setState({ loggedIn: true });
+  //   }
+  // }
+
+  test = () => {
+    return this.setState({ loggedIn: !this.state.loggedIn });
+  };
 
   //Find way for props to be accessible on this
   //page so the nav bar can be displayed only when user loggedin
@@ -33,9 +37,7 @@ class PageRoutes extends React.Component {
     return (
       <Provider store={store}>
         <Router>
-          {this.state.loggedIn == true ? (
-            <Route component={NavigationBar} />
-          ) : null}
+          <Route component={NavigationBar} />
           <Route component={HoldingsPage} exact path="/holdings" />
           <Route
             component={RealizedGainLossPage}
@@ -56,22 +58,11 @@ class PageRoutes extends React.Component {
             path="/changepassword"
           />
         </Router>
-        <button onClick={this.test}>test</button>
+        <button onClick={this.test}>Test button</button>
       </Provider>
     );
   }
 }
-
-const mapStateToProps = state => {
-  return {
-    state
-  };
-};
-
-connect(
-  mapStateToProps,
-  null
-)(PageRoutes);
 
 ReactDOM.render(
   React.createElement(PageRoutes),
