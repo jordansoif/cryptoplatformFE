@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import store from "/ReduxFolder/reduxStore";
-import { Provider, connect } from "react-redux";
+import { Provider } from "react-redux";
 import ReactDOM from "react-dom";
 import WrappedNormalLoginForm from "./UserLogin/LoginPage";
 import CreateNewUser from "./UserLogin/CreateNewUser";
@@ -17,48 +17,31 @@ import TradeTicket from "./UserPages/TradeTicket";
 import HomePage from "./UserPages/HomePage";
 
 class PageRoutes extends React.Component {
-  state = { loggedIn: true };
-
-  // componentWillUpdate() {
-  //   if (store.getState().loginFeature.currentUser !== null) {
-  //     console.log(store.getState().loginFeature.currentUser);
-  //     return this.setState({ loggedIn: true });
-  //   }
-  // }
-
-  // test = () => {
-  //   return this.setState({ loggedIn: !this.state.loggedIn });
-  // };
-
-  //Find way for props to be accessible on this
-  //page so the nav bar can be displayed only when user loggedin
-
   render() {
     return (
       <Provider store={store}>
         <Router>
-          <Route component={NavigationBar} />
-          <Route component={HoldingsPage} exact path="/holdings" />
-          <Route
-            component={RealizedGainLossPage}
-            exact
-            path="/realizedtrades"
-          />
-          <Route component={FundAccount} exact path="/fundaccount" />
-          <Route component={NewsPage} exact path="/news" />
-          <Route component={TradePage} exact path="/tradepage" />
-          <Route component={TestPage} exact path="/testpage" />
-          <Route component={TradeTicket} exact path="/ticket" />
           <Route component={WrappedNormalLoginForm} exact path="/" />
           <Route component={CreateNewUser} exact path="/createuser" />
-          <Route component={HomePage} exact path="/home" />
           <Route
             component={WrappedChangePasswordForm}
             exact
             path="/changepassword"
           />
+          <Route component={NavigationBar} strict path="/li/" />
+          <Route component={HoldingsPage} exact path="/li/holdings" />
+          <Route
+            component={RealizedGainLossPage}
+            exact
+            path="/li/realizedtrades"
+          />
+          <Route component={FundAccount} exact path="/li/fundaccount" />
+          <Route component={NewsPage} exact path="/li/news" />
+          <Route component={TradePage} exact path="/li/tradepage" />
+          <Route component={TestPage} exact path="/li/testpage" />
+          <Route component={TradeTicket} exact path="/li/ticket" />
+          <Route component={HomePage} exact path="/li/home" />
         </Router>
-        {/* <button onClick={this.test}>Test button</button> */}
       </Provider>
     );
   }

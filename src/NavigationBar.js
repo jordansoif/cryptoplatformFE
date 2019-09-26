@@ -1,9 +1,5 @@
 import { Menu, Icon } from "antd";
 import React from "react";
-import Axios from "axios";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { getState } from "Redux";
-import store from "/ReduxFolder/reduxStore";
 
 const { SubMenu } = Menu;
 
@@ -11,7 +7,7 @@ class NavigationBar extends React.Component {
   state = {};
 
   handleOnClick = e => {
-    return this.props.history.push(`/${e.key}`);
+    return this.props.history.push(`/li/${e.key}`);
   };
 
   render() {

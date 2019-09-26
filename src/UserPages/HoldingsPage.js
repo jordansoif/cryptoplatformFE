@@ -53,8 +53,15 @@ class HoldingsPage extends React.Component {
 
   componentWillMount() {
     apiRequest("get", "info/getallholdings").then(res => {
+      console.log(res);
       var dataArray = [];
-      res.data.map(e => dataArray.push(e));
+      res.data.map(e => {
+        dataArray.filter(purchaseLot => {
+          if (purchaseLot.symbol !== e.symbol) {
+            dataArray.push;
+          }
+        });
+      });
       this.setState({ data: dataArray });
     });
   }
@@ -70,3 +77,28 @@ class HoldingsPage extends React.Component {
 }
 
 export default HoldingsPage;
+
+// function updateInventory(arr1, arr2) {
+//   // A helper method to return the index of
+//   // a specified product (undefined if not found)
+//   var getPurchaseLotIndex = function (name) {
+//       for (var i = 0; i < this.length; i++) {
+//         if (this[i].symbol === name) {
+//               return i;
+//           }
+//       }
+//       return undefined;
+//   }
+
+//   // For each item of the new Inventory
+//   for (var i = 0; i < arr2.length; i++) {
+//       let index = getPurchaseLotIndex.call(arr1, arr2[i].symbol);
+//       if (index === undefined) {
+//           arr1.push(arr2[i]);
+//       } else {
+//           // Add the new quantity of the current item
+//           arr1[index]. += arr2[i][0];
+//       }
+//   }
+//   return arr1;
+// }

@@ -1,11 +1,6 @@
 import React from "react";
-import { Form, Icon, Input, Button, Checkbox } from "antd";
-import Axios from "axios";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { getState } from "Redux";
-import store from "/ReduxFolder/reduxStore";
-import ReactDOM from "react-dom";
-import mountNode from "react-dom";
+import { Form, Icon, Input, Button } from "antd";
+import { Link } from "react-router-dom";
 import { apiRequest } from "../api";
 
 class CreateNewUser extends React.Component {

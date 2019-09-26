@@ -46,7 +46,7 @@ class TradePage extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.orderType) {
-      this.props.history.push("/ticket");
+      this.props.history.push("/li/ticket");
     }
     if (nextProps.error) {
       this.setState({
@@ -59,7 +59,7 @@ class TradePage extends React.Component {
     // NEEDS CLEANING
     if (e[0] == "Buy") {
       var mapCurrency = [];
-      apiRequest("get", "altapi/getallsymbols").then(res => {
+      apiRequest("get", "data/getallsymbols").then(res => {
         res.data.map(e => {
           if (e.symbol.slice(-3) === "BTC") {
             mapCurrency.push({ value: e.symbol, label: e.symbol });
@@ -139,7 +139,7 @@ class TradePage extends React.Component {
   calcTradeValue = () => {
     // NEEDS CLEANING, ALL THE SAME BEFORE THE .then
     if (this.state.selectedTradeType == "Buy") {
-      apiRequest("put", "altapi/getsymbolinfo", {
+      apiRequest("put", "data/getsymbolinfo", {
         symbol: this.state.selectedSymbol
       })
         .then(res => {
@@ -156,7 +156,7 @@ class TradePage extends React.Component {
         });
     }
     if (this.state.selectedTradeType == "Sell") {
-      apiRequest("put", "altapi/getsymbolinfo", {
+      apiRequest("put", "data/getsymbolinfo", {
         symbol: this.state.selectedSymbol
       })
         .then(res => {

@@ -26,7 +26,7 @@ class TestPage extends React.Component {
 
   placeTrade = () => {
     let dataArray = [];
-    Axios.get("http://localhost:5000/altapi/topstories").then(res => {
+    Axios.get("http://localhost:5000/data/topstories").then(res => {
       res.data.articles.map(e => dataArray.push(e.title));
       this.setState({ testData: dataArray });
     });
@@ -61,7 +61,7 @@ export default TestPage;
 // placeTrade = () => {
 //   let testData = [];
 //   var i;
-//   Axios.put(`http://localhost:5000/altapi/twodaykline`, {
+//   Axios.put(`http://localhost:5000/data/twodaykline`, {
 //     symbol: "BNBBTC"
 //   }).then(res => {
 //     res.data.map(e => {

@@ -1,4 +1,3 @@
-import Axios from "axios";
 import cookie from "react-cookies";
 import { apiRequest } from "../api";
 

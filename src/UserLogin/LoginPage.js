@@ -1,14 +1,7 @@
 import React from "react";
-import { Form, Icon, Input, Button, Checkbox } from "antd";
-import Axios from "axios";
-import { BrowserRouter as Router, Link } from "react-router-dom";
-import store from "/ReduxFolder/reduxStore";
+import { Form, Icon, Input, Button } from "antd";
+import { Link } from "react-router-dom";
 import * as actions from "../ReduxFolder/reduxActions";
-import ReactDOM from "react-dom";
-import mountNode from "react-dom";
-import WrappedChangePasswordForm from "./ChangePassword";
-import cookie from "react-cookies";
-import { apiRequest } from "../api";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
@@ -22,7 +15,7 @@ class LoginPage extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.currentUser) {
-      this.props.history.push("/home");
+      this.props.history.push("/li/home");
     }
     if (nextProps.error) {
       this.setState({ error: nextProps.error });

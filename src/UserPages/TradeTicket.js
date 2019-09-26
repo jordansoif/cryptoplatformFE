@@ -1,9 +1,5 @@
 import { Button } from "antd";
 import React from "react";
-import Axios from "axios";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { getState } from "Redux";
-import store from "/ReduxFolder/reduxStore";
 import { connect } from "react-redux";
 
 // Page not yet cleaned, awaiting backend changes before completing this page
@@ -27,11 +23,11 @@ class TradeTicket extends React.Component {
   }
 
   buttonClickHoldings = () => {
-    return this.props.history.push("/holdings");
+    return this.props.history.push("/li/holdings");
   };
 
   buttonClickRealized = () => {
-    return this.props.history.push("/realizedtrades");
+    return this.props.history.push("/li/realizedtrades");
   };
 
   render() {

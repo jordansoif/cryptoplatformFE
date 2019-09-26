@@ -1,11 +1,5 @@
 import React from "react";
-import { Form, Icon, Input, Button, Checkbox } from "antd";
-import Axios from "axios";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { getState } from "Redux";
-import store from "/ReduxFolder/reduxStore";
-import ReactDOM from "react-dom";
-import mountNode from "react-dom";
+import { Input, Button } from "antd";
 import { apiRequest } from "../api";
 
 //Unmount resOutput and error when entering new information
@@ -27,15 +21,12 @@ class FundAccount extends React.Component {
   }
 
   inputChange = e => {
-    var valueToNum = Number.parseFloat(e.target.value);
     this.setState({
-      inputValue: valueToNum
+      inputValue: parseFloat(e.target.value)
     });
   };
 
   updateBitcoinButton = () => {
-    // NEEDS CLEANING
-    console.log(this.state.inputValue);
     if (
       this.state.inputValue === 0 ||
       this.state.inputValue === null ||
@@ -66,8 +57,9 @@ class FundAccount extends React.Component {
         <h3>Current Account Balance: ₿{this.state.userBitcoin}</h3>
         <Input
           onChange={this.inputChange}
+          type="number"
           prefix="₿"
-          placeholder="Enter Value to add to account."
+          placeholder="Enter value to add to account."
         />
         <p>{this.state.resOutput}</p>
         <p>{this.state.error}</p>

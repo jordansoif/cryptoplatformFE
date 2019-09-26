@@ -1,9 +1,5 @@
-import { Menu, Icon, List, Button } from "antd";
+import { List, Button } from "antd";
 import React from "react";
-import Axios from "axios";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { getState } from "Redux";
-import store from "/ReduxFolder/reduxStore";
 import { apiRequest } from "../api";
 
 class NewsPage extends React.Component {
@@ -13,22 +9,20 @@ class NewsPage extends React.Component {
   };
 
   componentWillMount() {
-    let dataArray = [];
-    apiRequest("get", "altapi/topstories").then(res => {
-      res.data.articles.map(e => dataArray.push(e.title));
+    apiRequest("get", "data/topstories").then(res => {
+      const fullData = res.data.articles.map(e => e.title);
       this.setState({
-        fullData: dataArray,
-        listData: [dataArray[0], dataArray[1], dataArray[2]]
+        fullData,
+        listData: [fullData[0], fullData[1], fullData[2]]
       });
     });
   }
 
   loadMore = () => {
-    let newListData = this.state.listData;
-    const currentLength = this.state.listData.length;
-    this.state.fullData
-      .slice(currentLength, currentLength + 3)
-      .map(e => newListData.push(e));
+    const newListData = this.state.fullData.slice(
+      0,
+      this.state.listData.length + 3
+    );
     this.setState({ listData: newListData });
   };
 
