@@ -56,9 +56,7 @@ class RealizedGainLossPage extends React.Component {
 
   componentWillMount() {
     apiRequest("get", "info/getallrealized").then(res => {
-      var dataArray = [];
-      res.data.map(e => dataArray.push(e));
-      this.setState({ data: dataArray });
+      this.setState({ data: res.data });
     });
   }
 

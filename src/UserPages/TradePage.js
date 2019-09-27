@@ -1,15 +1,10 @@
-import { Menu, Icon, Cascader, InputNumber, Button, Table } from "antd";
+import { Cascader, InputNumber, Button, Table } from "antd";
 import React from "react";
-import Axios from "axios";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { getState } from "Redux";
-import store from "/ReduxFolder/reduxStore";
 import { apiRequest } from "../api";
 import { bindActionCreators } from "Redux";
 import { connect } from "react-redux";
 import { tradeTicketInfo } from "../ReduxFolder/reduxActions";
 
-//Page partially cleaned, waiting on backend changes to db before finalizing
 //Unmount resOutput and error when entering new information
 
 const optionsBuySell = [
@@ -56,7 +51,6 @@ class TradePage extends React.Component {
   }
 
   tradeTypeInput = e => {
-    // NEEDS CLEANING
     if (e[0] == "Buy") {
       var mapCurrency = [];
       apiRequest("get", "data/getallsymbols").then(res => {
@@ -73,7 +67,6 @@ class TradePage extends React.Component {
     } else if (e[0] == "Sell") {
       var mapCurrency = [];
       apiRequest("get", "trade/getallsymbolholdings").then(res => {
-        console.log(res);
         res.data.map(e =>
           mapCurrency.push({ value: e.symbol, label: e.symbol })
         );
@@ -86,7 +79,6 @@ class TradePage extends React.Component {
   };
 
   symbolInput = e => {
-    // NEEDS CLEANING
     if (this.state.selectedTradeType == "Sell") {
       if (e[0] == undefined) {
         return this.setState({ error: "Please input a trade type." });
@@ -94,8 +86,13 @@ class TradePage extends React.Component {
       apiRequest("put", "trade/getsymbolpurchaselots", {
         symbol: e[0]
       }).then(res => {
+        const removeEmptyLots = res.data.map(e => {
+          if (e.units_remaining == 0) {
+            return;
+          } else return e;
+        });
         this.setState({
-          lotsToLoad: [...res.data],
+          lotsToLoad: removeEmptyLots,
           selectedSymbol: e[0],
           saleLots: []
         });
@@ -137,29 +134,18 @@ class TradePage extends React.Component {
   };
 
   calcTradeValue = () => {
-    // NEEDS CLEANING, ALL THE SAME BEFORE THE .then
-    if (this.state.selectedTradeType == "Buy") {
-      apiRequest("put", "data/getsymbolinfo", {
-        symbol: this.state.selectedSymbol
-      })
-        .then(res => {
+    apiRequest("put", "data/getsymbolinfo", {
+      symbol: this.state.selectedSymbol
+    })
+      .then(res => {
+        if (this.state.selectedTradeType == "Buy") {
           return this.setState({
             tradeValueCalc:
               parseFloat(res.data.price) * this.state.sharesToTrade,
             pricePerShare: parseFloat(res.data.price)
           });
-        })
-        .catch(err => {
-          return this.setState({
-            error: "An error has occurred in calculating the trade value."
-          });
-        });
-    }
-    if (this.state.selectedTradeType == "Sell") {
-      apiRequest("put", "data/getsymbolinfo", {
-        symbol: this.state.selectedSymbol
-      })
-        .then(res => {
+        }
+        if (this.state.selectedTradeType == "Sell") {
           var sharesToSell = 0;
           this.state.saleLots.map(e => {
             sharesToSell = e.value + sharesToSell;
@@ -169,13 +155,14 @@ class TradePage extends React.Component {
             pricePerShare: parseFloat(res.data.price),
             sharesToTrade: sharesToSell
           });
-        })
-        .catch(err => {
-          return this.setState({
-            error: "An error has occurred in calculating the trade value."
-          });
+        }
+      })
+      .catch(err => {
+        return this.setState({
+          error: "An error has occurred in calculating the trade value."
         });
-    } else return;
+      });
+    return;
   };
 
   placeTrade = () => {
@@ -194,13 +181,13 @@ class TradePage extends React.Component {
     const columns = [
       {
         title: "Quantity to Sell",
-        dataIndex: "units_purchased",
+        dataIndex: "units_remaining",
         key: "quantityToSell",
-        render: (units_purchased, key) => (
+        render: (units_remaining, key) => (
           <span>
             <InputNumber
               min={0}
-              max={parseFloat(units_purchased)}
+              max={parseFloat(units_remaining)}
               step={0.5}
               size="small"
               defaultValue="0"
@@ -211,8 +198,8 @@ class TradePage extends React.Component {
       },
       {
         title: "Units held from Purchase",
-        dataIndex: "units_purchased",
-        key: "units_purchased"
+        dataIndex: "units_remaining",
+        key: "units_remaining"
       },
       {
         title: "Acquisition Cost per Unit",

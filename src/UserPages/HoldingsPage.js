@@ -21,18 +21,13 @@ const columns = [
   },
   {
     title: "Units Held",
-    dataIndex: "units_held",
-    key: "units_held"
+    dataIndex: "units_remaining",
+    key: "units_remaining"
   },
   {
     title: "Market Value",
     dataIndex: "position_value",
     key: "position_value"
-  },
-  {
-    title: "Average Unit Cost",
-    dataIndex: "average_cost_per_unit",
-    key: "average_cost_per_unit"
   },
   {
     title: "Cost Basis",
@@ -41,8 +36,8 @@ const columns = [
   },
   {
     title: "Profit or Loss",
-    dataIndex: "profit_or_loss",
-    key: "profit_or_loss"
+    dataIndex: "profit_loss",
+    key: "profit_loss"
   }
 ];
 
@@ -53,16 +48,7 @@ class HoldingsPage extends React.Component {
 
   componentWillMount() {
     apiRequest("get", "info/getallholdings").then(res => {
-      console.log(res);
-      var dataArray = [];
-      res.data.map(e => {
-        dataArray.filter(purchaseLot => {
-          if (purchaseLot.symbol !== e.symbol) {
-            dataArray.push;
-          }
-        });
-      });
-      this.setState({ data: dataArray });
+      this.setState({ data: res.data });
     });
   }
 
@@ -77,28 +63,3 @@ class HoldingsPage extends React.Component {
 }
 
 export default HoldingsPage;
-
-// function updateInventory(arr1, arr2) {
-//   // A helper method to return the index of
-//   // a specified product (undefined if not found)
-//   var getPurchaseLotIndex = function (name) {
-//       for (var i = 0; i < this.length; i++) {
-//         if (this[i].symbol === name) {
-//               return i;
-//           }
-//       }
-//       return undefined;
-//   }
-
-//   // For each item of the new Inventory
-//   for (var i = 0; i < arr2.length; i++) {
-//       let index = getPurchaseLotIndex.call(arr1, arr2[i].symbol);
-//       if (index === undefined) {
-//           arr1.push(arr2[i]);
-//       } else {
-//           // Add the new quantity of the current item
-//           arr1[index]. += arr2[i][0];
-//       }
-//   }
-//   return arr1;
-// }
