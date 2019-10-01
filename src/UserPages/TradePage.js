@@ -79,10 +79,10 @@ class TradePage extends React.Component {
   };
 
   symbolInput = e => {
+    if (e[0] == undefined) {
+      return this.setState({ error: "Please input a symbol." });
+    }
     if (this.state.selectedTradeType == "Sell") {
-      if (e[0] == undefined) {
-        return this.setState({ error: "Please input a trade type." });
-      }
       apiRequest("put", "trade/getsymbolpurchaselots", {
         symbol: e[0]
       }).then(res => {
@@ -93,11 +93,11 @@ class TradePage extends React.Component {
         });
         this.setState({
           lotsToLoad: removeEmptyLots,
-          selectedSymbol: e[0],
-          saleLots: []
+          saleLots: [] //This is here to clear recent saleLot results
         });
       });
-    } else this.setState({ selectedSymbol: e[0] });
+    }
+    return this.setState({ selectedSymbol: e[0] }); //covers buy and sell
   };
 
   shareInput = e => {
@@ -252,16 +252,7 @@ class TradePage extends React.Component {
           ""
         )}
         <br />
-        <Button
-          onClick={this.calcTradeValue}
-          type="primary"
-          disabled={
-            false
-            // {  if (this.state.selectedTradeType == "Buy") {if (this.state.sharesToTrade !== 0){return true}} //NEED TO IMPLEMENT THIS ABOVE to setSate for an on/ogg switch for disabled
-            //   if (this.state.selectedTradeType == "Sell") {if (this.state.sale_lots.length !== 0){return true}}
-            //   else return false}
-          }
-        >
+        <Button onClick={this.calcTradeValue} type="primary" disabled={false}>
           Calculate Trade Value
         </Button>
         <br />

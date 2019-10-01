@@ -2,8 +2,6 @@ import React from "react";
 import { Input, Button } from "antd";
 import { apiRequest } from "../api";
 
-//Unmount resOutput and error when entering new information
-
 class FundAccount extends React.Component {
   state = {
     userBitcoinNow: 0,

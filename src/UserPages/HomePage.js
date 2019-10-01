@@ -1,23 +1,46 @@
-import { Table, Divider, Tag } from "antd";
 import React from "react";
 import Axios from "axios";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { getState } from "Redux";
-import store from "/ReduxFolder/reduxStore";
-import { apiRequest } from "../api";
+import { VictoryLine, VictoryChart, VictoryAxis, VictoryTheme } from "victory";
 
 class HomePage extends React.Component {
+  state = {
+    testData: [],
+    infoLoadToggle: false
+  };
+
+  componentWillMount() {
+    let testData = [];
+    Axios.put(`http://localhost:5000/data/twodaykline`, {
+      symbol: "BTCUSDT"
+    }).then(res => {
+      console.log(res);
+      res.data.map(e => {
+        testData.push({ Hours: 0, Price: parseFloat(e[1]) });
+      });
+      for (let i = 0; i < testData.length; i++) {
+        testData[i].Hours = i;
+      }
+      this.setState({ testData, infoLoadToggle: !this.state.infoLoadToggle });
+      console.log(testData);
+    });
+    return console.log(testData);
+  }
+
   render() {
     return (
       <div>
-        <h1>Home Page:</h1>
-        <p>
-          Work in Progress. Will be adding 48 hour charts for 3 main currencies
-          that user chooses. info to get chart info already set up on backend,
-          having difficulty finding a good chart library for setting up the
-          charts. Some of the work for the charts is already set up in the test
-          page code
-        </p>
+        <h1>Bitcoin 48 hour Price Chart:</h1>
+        <VictoryChart theme={VictoryTheme.material} domainPadding={20}>
+          <VictoryAxis
+            dependentAxis
+            crossAxis
+            width={400}
+            height={400}
+            theme={VictoryTheme.material}
+            standalone={false}
+          />
+          <VictoryLine data={this.state.testData} x="Hours" y="Price" />
+        </VictoryChart>
       </div>
     );
   }

@@ -2,8 +2,6 @@ import { Button } from "antd";
 import React from "react";
 import { connect } from "react-redux";
 
-// Page not yet cleaned, awaiting backend changes before completing this page
-
 class TradeTicket extends React.Component {
   state = {
     orderType: "",
@@ -39,7 +37,6 @@ class TradeTicket extends React.Component {
           <li>Symbol: {this.state.symbol}</li>
           <li>Quantity of Units: {this.state.quantity}</li>
           <li>Per Unit Price: {this.state.unitPrice}</li>
-          {/* <li>Lots Sold: {this.state.orderType}</li> */}
         </ul>
         <Button onClick={this.buttonClickHoldings}>Go To Holdings</Button>
         {this.props.reduxProps.orderType == "Sell" ? (

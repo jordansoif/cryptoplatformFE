@@ -25,32 +25,42 @@ class TestPage extends React.Component {
   };
 
   placeTrade = () => {
-    let dataArray = [];
-    Axios.get("http://localhost:5000/data/topstories").then(res => {
-      res.data.articles.map(e => dataArray.push(e.title));
-      this.setState({ testData: dataArray });
+    let testData = [];
+    Axios.put(`http://localhost:5000/data/twodaykline`, {
+      symbol: "BTCUSDT"
+    }).then(res => {
+      console.log(res);
+      res.data.map(e => {
+        testData.push({ Hours: 0, Price: parseFloat(e[1]) });
+      });
+      for (let i = 0; i < testData.length; i++) {
+        testData[i].Hours = i;
+      }
+      this.setState({ testData, infoLoadToggle: !this.state.infoLoadToggle });
+      console.log(testData);
     });
+    return console.log(testData);
   };
 
   render() {
-    // const data = [
-    //   "Racing car sprays burning fuel into crowd.",
-    //   "Japanese princess to wed commoner.",
-    //   "Australian walks 100km after outback crash.",
-    //   "Man charged over missing wedding girl.",
-    //   "Los Angeles battles huge wildfires."
-    // ];
     return (
       <div>
         <h1>Hello from the Test Page</h1>
         <button onClick={this.placeTrade}>Test Button</button>
-        <List
-          size="large"
-          header={<div>Bitcoin News:</div>}
-          bordered
-          dataSource={this.state.testData}
-          renderItem={item => <List.Item>{item}</List.Item>}
-        />
+        <VictoryChart theme={VictoryTheme.material} domainPadding={20}>
+          {/* <VictoryAxis
+            tickValues={[0]}
+          /> */}
+          <VictoryAxis
+            dependentAxis
+            crossAxis
+            width={400}
+            height={400}
+            theme={VictoryTheme.material}
+            standalone={false}
+          />
+          <VictoryLine data={this.state.testData} x="Hours" y="Price" />
+        </VictoryChart>
       </div>
     );
   }
@@ -58,65 +68,62 @@ class TestPage extends React.Component {
 
 export default TestPage;
 
-// placeTrade = () => {
-//   let testData = [];
-//   var i;
-//   Axios.put(`http://localhost:5000/data/twodaykline`, {
-//     symbol: "BNBBTC"
-//   }).then(res => {
-//     res.data.map(e => {
-//       testData.push({ Hours: 0, Price: e[1] });
-//     });
-//     for (i = 0; i < testData.length; i++) {
-//       testData[47 - i].Hours = i;
-//     }
-//     this.setState({ testData, infoLoadToggle: !this.state.infoLoadToggle });
-//   });
-//   return console.log(testData);
-// };
+// class App extends React.Component {
+//   render() {
+//     return (
+//       <VictoryChart
+//         // adding the material theme provided with Victory
+//         theme={VictoryTheme.material}
+//         domainPadding={20}
+//       >
+//         <VictoryAxis
+//           tickValues={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+//           tickFormat={["1", "2", "3", "4", "5","6","7","8","9","10",]}
+//         />
+//         <VictoryAxis dependentAxis tickFormat={x => `$${x / 1000}k`} />
+//         <VictoryBar data={this.state.testData} x="quarter" y="earnings" />
+//       </VictoryChart>
+//     );
+//   }
+// }
+
+// ReactDOM.render(<App />, mountNode);
 
 {
-  /* {this.state.infoLoadToggle == false ? (
-          ""
-        ) : (
-          <VictoryChart theme={VictoryTheme.material} domainPadding={20}>
-            <VictoryAxis
-              tickValues={[0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48]}
-              tickFormat={[
-                "48",
-                "44",
-                "40",
-                "36",
-                "32",
-                "28",
-                "24",
-                "20",
-                "16",
-                "12",
-                "8",
-                "4",
-                "Now"
-              ]}
-            />
-            <VictoryAxis
-              dependentAxis
-              tickFormat={[
-                "48",
-                "44",
-                "40",
-                "36",
-                "32",
-                "28",
-                "24",
-                "20",
-                "16",
-                "12",
-                "8",
-                "4",
-                "Now"
-              ]}
-            />
-            <VictoryLine data={this.state.testData} x="Hours" y="Price" />
-          </VictoryChart>
-        )} */
+  /* <VictoryAxis
+// tickValues={[0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48]}
+// tickFormat={[
+//   "48",
+//   "44",
+//   "40",
+//   "36",
+//   "32",
+//   "28",
+//   "24",
+//   "20",
+//   "16",
+//   "12",
+//   "8",
+//   "4",
+//   "Now"
+// ]}
+/>
+{/* <VictoryAxis
+  dependentAxis
+  tickFormat={[
+    "48",
+    "44",
+    "40",
+    "36",
+    "32",
+    "28",
+    "24",
+    "20",
+    "16",
+    "12",
+    "8",
+    "4",
+    "Now"
+  ]}
+/> */
 }
