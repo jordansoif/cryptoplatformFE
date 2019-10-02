@@ -13,7 +13,7 @@ class NewsPage extends React.Component {
       const fullData = res.data.articles.map(e => e.title);
       this.setState({
         fullData,
-        listData: [fullData[0], fullData[1], fullData[2]]
+        listData: fullData.splice(0, 3)
       });
     });
   }

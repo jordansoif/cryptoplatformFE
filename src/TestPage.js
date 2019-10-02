@@ -20,26 +20,26 @@ import { VictoryLine, VictoryChart, VictoryAxis, VictoryTheme } from "victory";
 
 class TestPage extends React.Component {
   state = {
-    testData: [],
+    data: [],
     infoLoadToggle: false
   };
 
   placeTrade = () => {
-    let testData = [];
+    let data = [];
     Axios.put(`http://localhost:5000/data/twodaykline`, {
       symbol: "BTCUSDT"
     }).then(res => {
       console.log(res);
       res.data.map(e => {
-        testData.push({ Hours: 0, Price: parseFloat(e[1]) });
+        data.push({ Hours: 0, Price: parseFloat(e[1]) });
       });
-      for (let i = 0; i < testData.length; i++) {
-        testData[i].Hours = i;
+      for (let i = 0; i < data.length; i++) {
+        data[i].Hours = i;
       }
-      this.setState({ testData, infoLoadToggle: !this.state.infoLoadToggle });
-      console.log(testData);
+      this.setState({ data, infoLoadToggle: !this.state.infoLoadToggle });
+      console.log(data);
     });
-    return console.log(testData);
+    return console.log(data);
   };
 
   render() {
@@ -48,9 +48,6 @@ class TestPage extends React.Component {
         <h1>Hello from the Test Page</h1>
         <button onClick={this.placeTrade}>Test Button</button>
         <VictoryChart theme={VictoryTheme.material} domainPadding={20}>
-          {/* <VictoryAxis
-            tickValues={[0]}
-          /> */}
           <VictoryAxis
             dependentAxis
             crossAxis
@@ -59,7 +56,7 @@ class TestPage extends React.Component {
             theme={VictoryTheme.material}
             standalone={false}
           />
-          <VictoryLine data={this.state.testData} x="Hours" y="Price" />
+          <VictoryLine data={this.state.data} x="Hours" y="Price" />
         </VictoryChart>
       </div>
     );
@@ -67,63 +64,3 @@ class TestPage extends React.Component {
 }
 
 export default TestPage;
-
-// class App extends React.Component {
-//   render() {
-//     return (
-//       <VictoryChart
-//         // adding the material theme provided with Victory
-//         theme={VictoryTheme.material}
-//         domainPadding={20}
-//       >
-//         <VictoryAxis
-//           tickValues={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-//           tickFormat={["1", "2", "3", "4", "5","6","7","8","9","10",]}
-//         />
-//         <VictoryAxis dependentAxis tickFormat={x => `$${x / 1000}k`} />
-//         <VictoryBar data={this.state.testData} x="quarter" y="earnings" />
-//       </VictoryChart>
-//     );
-//   }
-// }
-
-// ReactDOM.render(<App />, mountNode);
-
-{
-  /* <VictoryAxis
-// tickValues={[0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48]}
-// tickFormat={[
-//   "48",
-//   "44",
-//   "40",
-//   "36",
-//   "32",
-//   "28",
-//   "24",
-//   "20",
-//   "16",
-//   "12",
-//   "8",
-//   "4",
-//   "Now"
-// ]}
-/>
-{/* <VictoryAxis
-  dependentAxis
-  tickFormat={[
-    "48",
-    "44",
-    "40",
-    "36",
-    "32",
-    "28",
-    "24",
-    "20",
-    "16",
-    "12",
-    "8",
-    "4",
-    "Now"
-  ]}
-/> */
-}

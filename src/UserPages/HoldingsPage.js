@@ -1,9 +1,5 @@
-import { Table, Divider, Tag } from "antd";
+import { Table } from "antd";
 import React from "react";
-import Axios from "axios";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { getState } from "Redux";
-import store from "/ReduxFolder/reduxStore";
 import { apiRequest } from "../api";
 
 const columns = [

@@ -4,26 +4,24 @@ import { VictoryLine, VictoryChart, VictoryAxis, VictoryTheme } from "victory";
 
 class HomePage extends React.Component {
   state = {
-    testData: [],
+    data: [],
     infoLoadToggle: false
   };
 
   componentWillMount() {
-    let testData = [];
+    let data = [];
     Axios.put(`http://localhost:5000/data/twodaykline`, {
       symbol: "BTCUSDT"
     }).then(res => {
-      console.log(res);
       res.data.map(e => {
-        testData.push({ Hours: 0, Price: parseFloat(e[1]) });
+        data.push({ Hours: 0, Price: parseFloat(e[1]) });
       });
-      for (let i = 0; i < testData.length; i++) {
-        testData[i].Hours = i;
+      for (let i = 0; i < data.length; i++) {
+        data[i].Hours = i;
       }
-      this.setState({ testData, infoLoadToggle: !this.state.infoLoadToggle });
-      console.log(testData);
+      this.setState({ data, infoLoadToggle: !this.state.infoLoadToggle });
     });
-    return console.log(testData);
+    return;
   }
 
   render() {
@@ -39,7 +37,7 @@ class HomePage extends React.Component {
             theme={VictoryTheme.material}
             standalone={false}
           />
-          <VictoryLine data={this.state.testData} x="Hours" y="Price" />
+          <VictoryLine data={this.state.data} x="Hours" y="Price" />
         </VictoryChart>
       </div>
     );
